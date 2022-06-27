@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/crud2/static/css/main.36cb7f89.css",
+    "main.js": "/crud2/static/js/main.c87c84ce.js",
+    "static/js/787.114d5c13.chunk.js": "/crud2/static/js/787.114d5c13.chunk.js",
+    "static/media/Envy-Colt.png": "/crud2/static/media/Envy-Colt.626233d6c8e52419db9b.png",
+    "index.html": "/crud2/index.html",
+    "main.36cb7f89.css.map": "/crud2/static/css/main.36cb7f89.css.map",
+    "main.c87c84ce.js.map": "/crud2/static/js/main.c87c84ce.js.map",
+    "787.114d5c13.chunk.js.map": "/crud2/static/js/787.114d5c13.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.36cb7f89.css",
+    "static/js/main.c87c84ce.js"
+  ]
+}
