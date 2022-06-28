@@ -9,6 +9,8 @@ import koltsReducer from './Components/koltsReducer';
 import Statistic from './Components/Statistic';
 import axios from 'axios';
 import Message from './Components/Message';
+import CreateColors from './colors/CreateColors';
+import ColorList from './colors/ColorList';
 
 function App() {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
@@ -28,7 +30,8 @@ function App() {
 
   const [koltColors, setKoltColors] = useState(null);
   const [createKoltColors, setCreateKoltColors] = useState(null);
-  const [deleteKoltColors, setDeleteKoltKolors] = useState(null);
+  console.log('createKoltColors', createKoltColors);
+  const [deleteKoltColors, setDeleteKoltColors] = useState(null);
 
   const sort = (e) => {
     const sortOrder = e.target.value;
@@ -89,7 +92,8 @@ function App() {
       });
   }, [editData]);
 
-  // /////////////KOLT COLOR//////////////READ
+  // /////////////KOLT COLOR//////////////
+  // READ
   useEffect(() => {
     axios.get('http://localhost:3004/spalvos').then((res) => {
       setKoltColors(res.data);
@@ -106,6 +110,17 @@ function App() {
         setLastUpdate(Date.now());
       });
   }, [createKoltColors]);
+
+  // DELETE
+  useEffect(() => {
+    if (null === deleteKoltColors) return;
+    axios
+      .delete('http://localhost:3004/spalvos/' + deleteKoltColors.id)
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
+  }, [deleteKoltColors]);
 
   return (
     <KoltContext.Provider
@@ -126,13 +141,15 @@ function App() {
       <ColorContext.Provider
         value={{
           koltColors,
-          setCreateKoltColors: setCreateData,
-          setDeleteKoltKolors: setDeleteData,
+          setCreateData: setCreateKoltColors,
+          setDeleteData: setDeleteKoltColors,
         }}
       >
         <div className='container'>
           <Create />
           <Statistic />
+          <CreateColors />
+          <ColorList />
           <List />
         </div>
         <Edit />

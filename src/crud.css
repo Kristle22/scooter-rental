@@ -24,6 +24,12 @@ body {
   width: 100%;
   background: url('../public/img/Envy-Colt.png') center/contain no-repeat;
 }
+.img2 {
+  width: 100%;
+  background: url('../public/img/koltColors.png') center/cover no-repeat;
+  border-radius: 5px;
+  margin: 0 0 0 10px;
+}
 .form {
   font-style: italic;
   gap: 15px 0;

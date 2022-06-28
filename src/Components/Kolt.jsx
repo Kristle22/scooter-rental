@@ -9,7 +9,7 @@ function Kolt({ kolt }) {
   const handleModal = () => {
     setModalData(kolt);
   };
-
+  console.log(kolt.img);
   return (
     <>
       <div className='flex-row'>
@@ -38,7 +38,7 @@ function Kolt({ kolt }) {
             <img
               style={{ width: '100%', borderRadius: '5px' }}
               src='./img/Envy-Colt2.png'
-              alt='scooter'
+              alt='scooters'
             />
           )}
         </div>

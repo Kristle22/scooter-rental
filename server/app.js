@@ -37,12 +37,17 @@ app.get('/paspirtukai', (req, res) => {
   });
 });
 
-// READ KOLTS COLOR
+// READ KOLTS COLORS
 app.get('/spalvos', (req, res) => {
   const sql = `
   SELECT
-  *
-  FROM kolts_color
+  c.title, c.id, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy
+  FROM kolts AS k
+  RIGHT JOIN kolts_color AS c
+  ON k.color_id = c.id
+  GROUP BY c.id
+  ORDER BY kolts_count DESC
+  
   `;
   con.query(sql, (err, result) => {
     if (err) throw err;
@@ -50,7 +55,7 @@ app.get('/spalvos', (req, res) => {
   });
 });
 
-// CREATE KOLTS
+// CREATE KOLT
 app.post('/paspirtukai', (req, res) => {
   const sql = `
   INSERT INTO kolts
@@ -70,13 +75,13 @@ app.post('/spalvos', (req, res) => {
   (title)
   VALUES (?)
   `;
-  con.query(sql, [req.body.id, req.body.title], (err, result) => {
+  con.query(sql, [req.body.title], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Atsirado Kolt paspirtuko nauja spalva', type: 'success' } });
   });
 });
 
-// DELETE
+// DELETE KOLT
 app.delete('/paspirtukai/:koltId', (req, res) => {
   const sql = `
   DELETE FROM kolts
@@ -88,7 +93,19 @@ app.delete('/paspirtukai/:koltId', (req, res) => {
   })
 });
 
-// EDIT
+// DELETE KOLTs COLOR
+app.delete('/spalvos/:colorId', (req, res) => {
+  const sql = `
+  DELETE FROM kolts_color
+  WHERE id = ?
+  `;
+  con.query(sql, [req.params.colorId], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Kolt spalva istrinta is saraso', type: 'danger' } });
+  })
+});
+
+// EDIT KOLT
 app.put('/paspirtukai/:koltId', (req, res) => {
   const sql = `
   UPDATE kolts 
