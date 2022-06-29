@@ -7,37 +7,57 @@ function Color({ color }) {
   const handleDelete = () => {
     setDeleteData(color);
   };
-  console.log(color);
+  console.log('color', color.imgPath);
   return (
     <>
       <div
         className='flex-row'
-        style={{ justifyContent: 'flex-start', flexWrap: 'nowrap' }}
+        style={{
+          width: '80%',
+          justifyContent: 'space-between',
+          flexWrap: 'nowrap',
+        }}
       >
-        {color.img ? (
+        {color.imgPath ? (
           <img
             style={{ width: '16%', borderRadius: '5px' }}
-            src={color.imgPath}
-            alt='scoter_image'
+            src={require(`../img/${color.title}.png`)}
+            alt='scooter_image'
           />
         ) : (
           <img
             style={{ width: '16%', borderRadius: '5px' }}
-            src='./img/Envy-Colt2.png'
+            src={require('../img/Envy-Colt2.png')}
             alt='scooter'
           />
         )}
-        <p>{color.title}</p>
+        <div
+          style={{
+            backgroundColor: color.title,
+            color: color.title === 'white' ? 'black' : 'white',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            lineHeight: '50px',
+          }}
+        >
+          {color.title}
+        </div>
         <p>{color.kolts_count}</p>
         <p>{color.busy}</p>
-        {color.busy === 0 || color.busy === null ? (
-          <button type='button' className='dlt' onClick={handleDelete}>
-            Delete
-          </button>
-        ) : (
-          ''
-        )}
       </div>
+      {color.busy === 0 || color.busy === null ? (
+        <button
+          type='button'
+          className='dlt'
+          onClick={handleDelete}
+          style={{ maxHeight: '40px', padding: '10px 20px' }}
+        >
+          Delete
+        </button>
+      ) : (
+        ''
+      )}
     </>
   );
 }

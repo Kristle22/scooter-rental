@@ -41,7 +41,7 @@ app.get('/paspirtukai', (req, res) => {
 app.get('/spalvos', (req, res) => {
   const sql = `
   SELECT
-  c.title, c.id, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy
+  c.title, c.id, c.imgPath, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy
   FROM kolts AS k
   RIGHT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -112,7 +112,7 @@ app.put('/paspirtukai/:koltId', (req, res) => {
   SET regCode = ?, isBusy = ?, lastUsed = ?, totalRide = ?, color_id = ?
   where id = ?
   `;
-  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed, req.body.totalRide, req.body.color, req.params.koltId], (err, result) => {
+  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed, req.body.totalRide, req.body.color === '0' ? null : req.body.color, req.params.koltId], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Kolt duomenys sekmingai atnaujinti', type: 'info' } });
   });

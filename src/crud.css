@@ -22,11 +22,11 @@ body {
 
 .img {
   width: 100%;
-  background: url('../public/img/Envy-Colt.png') center/contain no-repeat;
+  background: url('./img/Envy-Colt.png') center/contain no-repeat;
 }
 .img2 {
   width: 100%;
-  background: url('../public/img/koltColors.png') center/cover no-repeat;
+  background: url('./img/koltColors.png') center/cover no-repeat;
   border-radius: 5px;
   margin: 0 0 0 10px;
 }
@@ -308,4 +308,7 @@ img.scooter {
   color: #1b1e21;
   background-color: #d6d8d9;
   border-color: #c6c8ca;
+}
+.color h4 {
+  width: 20%;
 }

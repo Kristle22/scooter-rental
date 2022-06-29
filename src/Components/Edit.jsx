@@ -28,7 +28,7 @@ function Edit() {
     setTotalRide(modalData.totalRide);
     setTotalRide('');
   }, [modalData]);
-  console.log(modalData);
+  console.log('modalData', modalData);
 
   const handleEdit = () => {
     const data = {
@@ -46,12 +46,24 @@ function Edit() {
     return null;
   }
 
+  console.log('koltColors', koltColors);
+  console.log('color', color);
   return (
     <>
       <div className='modal-layer'>
         <div className='modal-cont'>
           <div className='modal'>
             <div className='left-side'>
+              <h2>Info</h2>
+              <h3>
+                Color:{' '}
+                <span>
+                  {koltColors.map((c) => (color === c.id ? c.title : ''))}
+                </span>
+              </h3>
+              <h3>
+                User: <span></span>
+              </h3>
               <h4>Plan and manage your trip online</h4>
               <button
                 type='button'
@@ -62,7 +74,11 @@ function Edit() {
               </button>
               <img
                 className='scooter'
-                src={modalData.img ? modalData.img : './img/kick-scooter.png'}
+                src={
+                  modalData.img
+                    ? require(`../img/${modalData.color}.png`)
+                    : require('../img/kick-scooter.png')
+                }
                 alt='scooter'
               />
             </div>
@@ -119,6 +135,21 @@ function Edit() {
                       ))
                     : null}
                 </select>
+                {koltColors
+                  ? koltColors.map((c) =>
+                      c.id === color ? (
+                        <div
+                          key={c.id}
+                          style={{
+                            backgroundColor: c.title,
+                            borderRadius: '20px',
+                            width: '20px',
+                            height: '20px',
+                          }}
+                        ></div>
+                      ) : null
+                    )
+                  : null}
                 <h4>
                   Last Used: <span className='old'>{modalData.lastUsed}</span>
                 </h4>

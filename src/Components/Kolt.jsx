@@ -9,35 +9,40 @@ function Kolt({ kolt }) {
   const handleModal = () => {
     setModalData(kolt);
   };
-  console.log(kolt.img);
+  console.log('kolt color', kolt.color);
   return (
     <>
       <div className='flex-row'>
+        <span
+          style={{
+            backgroundColor: kolt.color ? kolt.color : null,
+            padding: '3px 10px',
+            borderRadius: '50%',
+            width: '20px',
+            height: '20px',
+            position: 'absolute',
+            marginLeft: '-5px',
+            marginTop: '-5px',
+          }}
+        >
+          {/* {kolt.color ? kolt.color : 'Random'} */}
+        </span>
         <div
           style={{
             width: '16%',
-            color: kolt.color === 'White' ? 'black' : 'white',
+            color: kolt.color === 'white' ? 'black' : 'white',
           }}
         >
-          <span
-            style={{
-              backgroundColor: kolt.color ? kolt.color : 'black',
-              padding: '3px 10px',
-              borderRadius: '5px',
-            }}
-          >
-            {kolt.color ? kolt.color : 'Random'}
-          </span>
           {kolt.img ? (
             <img
               style={{ width: '100%', borderRadius: '5px' }}
-              src={kolt.img}
+              src={require(`../img/${kolt.color}.png`)}
               alt='scoter_image'
             />
           ) : (
             <img
               style={{ width: '100%', borderRadius: '5px' }}
-              src='./img/Envy-Colt2.png'
+              src={require('../img/Envy-Colt2.png')}
               alt='scooters'
             />
           )}

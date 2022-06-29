@@ -10,9 +10,9 @@ function ColorList() {
         <h2>Color List of current scooters</h2>
       </div>
       <div className='flex-card'>
-        <div className='flex-row'>
-          <h4>Image</h4>
-          <h4>Color</h4>
+        <div className='flex-row color'>
+          <h4>COLT Image</h4>
+          <h4>COLT Color</h4>
           <h4>COLT's Count</h4>
           <h4>Busy COLTS</h4>
         </div>
