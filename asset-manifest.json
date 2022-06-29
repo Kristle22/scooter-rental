@@ -1,16 +1,27 @@
 {
   "files": {
-    "main.css": "/crud2/static/css/main.36cb7f89.css",
-    "main.js": "/crud2/static/js/main.c87c84ce.js",
+    "main.css": "/crud2/static/css/main.d74d01fe.css",
+    "main.js": "/crud2/static/js/main.775854ce.js",
     "static/js/787.114d5c13.chunk.js": "/crud2/static/js/787.114d5c13.chunk.js",
+    "static/media/koltColors.png": "/crud2/static/media/koltColors.17c207188391acc1fc94.png",
     "static/media/Envy-Colt.png": "/crud2/static/media/Envy-Colt.626233d6c8e52419db9b.png",
+    "static/media/Envy-Colt2.png": "/crud2/static/media/Envy-Colt2.37d51a5968b1616b520b.png",
+    "static/media/scooter.png": "/crud2/static/media/scooter.d0d06da2c3fcc807eddd.png",
+    "static/media/pink.png": "/crud2/static/media/pink.977fa3eedcc360b5193b.png",
+    "static/media/green.png": "/crud2/static/media/green.d2a9409eff97c4c03604.png",
+    "static/media/red.png": "/crud2/static/media/red.460f19bb50db13a34073.png",
+    "static/media/orange.png": "/crud2/static/media/orange.3e0d51f3ad4be2ceaf5d.png",
+    "static/media/teal.png": "/crud2/static/media/teal.d094bad983231eeaa09d.png",
+    "static/media/black.png": "/crud2/static/media/black.83e9655747876ec8a8bd.png",
+    "static/media/white.png": "/crud2/static/media/white.22bcdb5d9cfde0f69a9a.png",
+    "static/media/yellow.png": "/crud2/static/media/yellow.27ce4707c5aa26f261e9.png",
     "index.html": "/crud2/index.html",
-    "main.36cb7f89.css.map": "/crud2/static/css/main.36cb7f89.css.map",
-    "main.c87c84ce.js.map": "/crud2/static/js/main.c87c84ce.js.map",
+    "main.d74d01fe.css.map": "/crud2/static/css/main.d74d01fe.css.map",
+    "main.775854ce.js.map": "/crud2/static/js/main.775854ce.js.map",
     "787.114d5c13.chunk.js.map": "/crud2/static/js/787.114d5c13.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.36cb7f89.css",
-    "static/js/main.c87c84ce.js"
+    "static/css/main.d74d01fe.css",
+    "static/js/main.775854ce.js"
   ]
 }
