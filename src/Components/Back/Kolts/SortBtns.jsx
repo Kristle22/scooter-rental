@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import KoltContext from './KoltContext';
+import BackContext from '../BackContext';
 
 function SortBtns() {
-  const { selectDate, selectRide, sort } = useContext(KoltContext);
+  const { selectDate, selectRide, sort } = useContext(BackContext);
 
   return (
     <>

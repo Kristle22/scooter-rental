@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react';
-import rand from '../Functions/randNumbers';
-import KoltContext from './KoltContext';
+import rand from '../../../Functions/randNumbers';
+import BackContext from '../BackContext';
 
 function Create() {
-  const { setCreateData, koltColors } = useContext(KoltContext);
-  console.log('koltColors', koltColors);
+  const { setCreateData, koltColors } = useContext(BackContext);
+  console.log('koltColors_create', koltColors);
   const [regCode, setRegCode] = useState('KO' + rand(100000, 999999));
 
   const [color, setColor] = useState('0');
@@ -69,10 +69,12 @@ function Create() {
                 setTotalRide(e.target.value);
               }}
               value={totalRide}
-              placeholder='here...'
+              placeholder='... km.'
             />
             <button type='button' className='put' onClick={handleCreate}>
-              New COLT
+              <svg className='put'>
+                <use href='#Add' />
+              </svg>
             </button>
           </form>
         </div>

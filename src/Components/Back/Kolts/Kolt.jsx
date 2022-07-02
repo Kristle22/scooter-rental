@@ -1,15 +1,14 @@
 import { useContext } from 'react';
-import KoltContext from './KoltContext';
+import BackContext from '../BackContext';
 
 function Kolt({ kolt }) {
-  const { setDeleteData, setModalData } = useContext(KoltContext);
+  const { setDeleteData, setModalData } = useContext(BackContext);
   const handleDelete = () => {
     setDeleteData(kolt);
   };
   const handleModal = () => {
     setModalData(kolt);
   };
-  console.log('kolt color', kolt.color);
   return (
     <>
       <div className='flex-row'>
@@ -36,13 +35,13 @@ function Kolt({ kolt }) {
           {kolt.img ? (
             <img
               style={{ width: '100%', borderRadius: '5px' }}
-              src={require(`../img/${kolt.color}.png`)}
+              src={require(`../../../img/${kolt.color}.png`)}
               alt='scoter_image'
             />
           ) : (
             <img
               style={{ width: '100%', borderRadius: '5px' }}
-              src={require('../img/Envy-Colt2.png')}
+              src={require('../../../img/Envy-Colt2.png')}
               alt='scooters'
             />
           )}
@@ -57,10 +56,14 @@ function Kolt({ kolt }) {
         <p>{Number(kolt.totalRide).toFixed(2)} km.</p>
         <div className='btns'>
           <button type='button' className='edt' onClick={handleModal}>
-            Edit
+            <svg className='edt'>
+              <use href='#Edit' />
+            </svg>
           </button>
           <button type='button' className='dlt' onClick={handleDelete}>
-            Delete
+            <svg>
+              <use href='#Delete' />
+            </svg>
           </button>
         </div>
       </div>

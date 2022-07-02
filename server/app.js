@@ -41,7 +41,7 @@ app.get('/paspirtukai', (req, res) => {
 app.get('/spalvos', (req, res) => {
   const sql = `
   SELECT
-  c.title, c.id, c.imgPath, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy
+  c.title, c.id, c.imgPath, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, COUNT(k.id) - SUM(k.isBusy) AS ready
   FROM kolts AS k
   RIGHT JOIN kolts_color AS c
   ON k.color_id = c.id

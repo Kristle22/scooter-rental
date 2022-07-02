@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import KoltContext from './KoltContext';
+import BackContext from '../BackContext';
 
 function Statistic() {
-  const { kolts } = useContext(KoltContext);
+  const { kolts } = useContext(BackContext);
 
   const koltsTotalRide =
     kolts &&

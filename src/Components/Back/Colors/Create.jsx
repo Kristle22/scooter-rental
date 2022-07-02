@@ -1,14 +1,14 @@
 import { useContext, useState } from 'react';
-import ColorContext from './ColorContext';
+import BackContext from '../BackContext';
 
 function CreateColors() {
-  const { setCreateData } = useContext(ColorContext);
+  const { setCreateKoltColors } = useContext(BackContext);
 
   const [title, setTitle] = useState('');
 
   const handleCreate = () => {
     const data = { title };
-    setCreateData(data);
+    setCreateKoltColors(data);
     setTitle('');
   };
   return (
@@ -28,7 +28,9 @@ function CreateColors() {
               placeholder='new scooters color here...'
             />
             <button type='button' className='put' onClick={handleCreate}>
-              New COLOR
+              <svg className='put'>
+                <use href='#Add' />
+              </svg>
             </button>
           </form>
         </div>

@@ -32,7 +32,6 @@ function koltsReducer(state, action) {
       newState = state;
       break;
   }
-  console.log('newState', newState);
   return newState;
 }
 

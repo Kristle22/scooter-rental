@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
-import KoltContext from './KoltContext';
+import BackContext from '../BackContext';
 
 function Edit() {
   const { modalData, setModalData, setEditData, koltColors } =
-    useContext(KoltContext);
+    useContext(BackContext);
 
   const [isBusy, setIsBusy] = useState(1);
   const [lastUsed, setLastUsed] = useState('');
@@ -54,17 +54,16 @@ function Edit() {
         <div className='modal-cont'>
           <div className='modal'>
             <div className='left-side'>
-              <h2>Info</h2>
+              <h2>User Info</h2>
               <h3>
                 Color:{' '}
                 <span>
-                  {koltColors.map((c) => (color === c.id ? c.title : ''))}
+                  {/* {koltColors.map((c) => (color === c.id ? c.title : ''))} */}
                 </span>
               </h3>
               <h3>
                 User: <span></span>
               </h3>
-              <h4>Plan and manage your trip online</h4>
               <button
                 type='button'
                 className='close-x'
@@ -76,8 +75,8 @@ function Edit() {
                 className='scooter'
                 src={
                   modalData.img
-                    ? require(`../img/${modalData.color}.png`)
-                    : require('../img/kick-scooter.png')
+                    ? require(`../../../img/${modalData.color}.png`)
+                    : require('../../../img/kick-scooter.png')
                 }
                 alt='scooter'
               />
@@ -86,36 +85,31 @@ function Edit() {
               <form>
                 <h4>
                   Registration Code:{' '}
-                  <span className='old'>{modalData.regCode}</span>
+                  <span className='lastUsed'>{modalData.regCode}</span>
                 </h4>
-                <fieldset>
-                  <legend>
-                    <h4>Change availability</h4>
-                  </legend>
-                  {isBusy === 1 ? (
-                    <div className='field'>
-                      <h4 className='isAvailable'>Available</h4>
-                      <input
-                        type='checkbox'
-                        value={chbox}
-                        checked={false}
-                        onChange={cbClick}
-                      />
-                      <label>Busy</label>
-                    </div>
-                  ) : (
-                    <div className='field'>
-                      <h4 className='isBusy'>Busy</h4>
-                      <input
-                        type='checkbox'
-                        value={chbox}
-                        checked={true}
-                        onChange={cbClick}
-                      />
-                      <label>Busy</label>
-                    </div>
-                  )}
-                </fieldset>
+                {isBusy === 1 ? (
+                  <div className='field'>
+                    <h4 className='isAvailable'>Available</h4>
+                    <input
+                      type='checkbox'
+                      value={chbox}
+                      checked={false}
+                      onChange={cbClick}
+                    />
+                    <label>Busy</label>
+                  </div>
+                ) : (
+                  <div className='field'>
+                    <h4 className='isBusy'>Busy</h4>
+                    <input
+                      type='checkbox'
+                      value={chbox}
+                      checked={true}
+                      onChange={cbClick}
+                    />
+                    <label>Busy</label>
+                  </div>
+                )}
                 <select
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
@@ -151,7 +145,8 @@ function Edit() {
                     )
                   : null}
                 <h4>
-                  Last Used: <span className='old'>{modalData.lastUsed}</span>
+                  Last Used:{' '}
+                  <span className='lastUsed'>{modalData.lastUsed}</span>
                 </h4>
                 <label>Enter the date:</label>
                 <input
@@ -161,7 +156,7 @@ function Edit() {
                 />
                 <h4>
                   Total Ride:{' '}
-                  <span className='old'>
+                  <span className='lastUsed'>
                     {Number(modalData.totalRide).toFixed(2)} km.
                   </span>
                 </h4>
@@ -171,17 +166,24 @@ function Edit() {
                   type='text'
                   value={totalRide}
                   onChange={(e) => setTotalRide(e.target.value)}
+                  placeholder='... km.'
                 />
-                <button
-                  type='button'
-                  className='close'
-                  onClick={() => setModalData(null)}
-                >
-                  Close
-                </button>
-                <button type='button' className='put' onClick={handleEdit}>
-                  Save
-                </button>
+                <div className='btns-modal'>
+                  <button
+                    type='button'
+                    className='close'
+                    onClick={() => setModalData(null)}
+                  >
+                    <svg className='edt'>
+                      <use href='#Exit' />
+                    </svg>
+                  </button>
+                  <button type='button' className='put' onClick={handleEdit}>
+                    <svg className='put'>
+                      <use href='#Save' />
+                    </svg>
+                  </button>
+                </div>
               </form>
             </div>
           </div>

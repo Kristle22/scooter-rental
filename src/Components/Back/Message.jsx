@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import KoltContext from './KoltContext';
+import BackContext from './BackContext';
 
 function Message() {
-  const { message } = useContext(KoltContext);
+  const { message } = useContext(BackContext);
   if (null === message) return null;
   return (
     <div className='show-message'>

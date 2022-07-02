@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import Kolt from './Kolt';
-import KoltContext from './KoltContext';
+import BackContext from '../BackContext';
 import SortBtns from './SortBtns';
 
 function List() {
-  const { kolts } = useContext(KoltContext);
+  const { kolts } = useContext(BackContext);
 
   return (
     <>
