@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/crud2/static/css/main.d74d01fe.css",
-    "main.js": "/crud2/static/js/main.775854ce.js",
+    "main.css": "/crud2/static/css/main.fa8061d5.css",
+    "main.js": "/crud2/static/js/main.0a737bf8.js",
     "static/js/787.114d5c13.chunk.js": "/crud2/static/js/787.114d5c13.chunk.js",
     "static/media/koltColors.png": "/crud2/static/media/koltColors.17c207188391acc1fc94.png",
     "static/media/Envy-Colt.png": "/crud2/static/media/Envy-Colt.626233d6c8e52419db9b.png",
@@ -16,12 +16,12 @@
     "static/media/white.png": "/crud2/static/media/white.22bcdb5d9cfde0f69a9a.png",
     "static/media/yellow.png": "/crud2/static/media/yellow.27ce4707c5aa26f261e9.png",
     "index.html": "/crud2/index.html",
-    "main.d74d01fe.css.map": "/crud2/static/css/main.d74d01fe.css.map",
-    "main.775854ce.js.map": "/crud2/static/js/main.775854ce.js.map",
+    "main.fa8061d5.css.map": "/crud2/static/css/main.fa8061d5.css.map",
+    "main.0a737bf8.js.map": "/crud2/static/js/main.0a737bf8.js.map",
     "787.114d5c13.chunk.js.map": "/crud2/static/js/787.114d5c13.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d74d01fe.css",
-    "static/js/main.775854ce.js"
+    "static/css/main.fa8061d5.css",
+    "static/js/main.0a737bf8.js"
   ]
 }
