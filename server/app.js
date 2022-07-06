@@ -16,7 +16,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "la_ma",
+  database: "la_ma_kolts",
 });
 app.get('/', (req, res) => {
   res.send('Welcome to our world!')
@@ -41,13 +41,12 @@ app.get('/paspirtukai', (req, res) => {
 app.get('/spalvos', (req, res) => {
   const sql = `
   SELECT
-  c.title, c.id, c.imgPath, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, COUNT(k.id) - SUM(k.isBusy) AS ready
+  c.title, c.id, c.imgPath, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready
   FROM kolts AS k
   RIGHT JOIN kolts_color AS c
   ON k.color_id = c.id
   GROUP BY c.id
   ORDER BY kolts_count DESC
-  
   `;
   con.query(sql, (err, result) => {
     if (err) throw err;
@@ -116,6 +115,67 @@ app.put('/paspirtukai/:koltId', (req, res) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Kolt duomenys sekmingai atnaujinti', type: 'info' } });
   });
+});
+
+// READ FRONT KOLTS
+app.get('/front/paspirtukai', (req, res) => {
+  const sql = `
+  SELECT
+  k.id, c.title AS color, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready
+  FROM kolts AS k
+  LEFT JOIN kolts_color AS c
+  ON k.color_id = c.id
+  GROUP BY color_id
+  `;
+  con.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// READ FRONT KOLTS COLORS
+app.get('/front/spalvos', (req, res) => {
+  const sql = `
+  SELECT
+  c.title, c.id, c.imgPath, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides
+  FROM kolts AS k
+  RIGHT JOIN kolts_color AS c
+  ON k.color_id = c.id
+  GROUP BY c.id
+  ORDER BY kolts_count DESC
+  `;
+  con.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// READ FRONT Rental info
+app.get('/front/rezervacijos', (req, res) => {
+  const sql = `
+  SELECT
+  r.id, pick_up_date, return_date, name, email, com, kolt_id
+  FROM rental_info AS r
+  LEFT JOIN kolts AS k
+  ON r.kolt_id = k.id
+  `;
+  con.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// CREATE FRONT REZERV INFO
+app.post('/front/rezervacijos', (req, res) => {
+  const sql = `
+  INSERT INTO rental_info
+  (id, pick_up_date, return_date, name, email, com, kolt_id)
+  VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+  con.query(sql, [req.body.id, req.body.pickUpDate, req.body.returnDate, req.body.name, req.body.email, req.body.comments, req.body.koltId], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Jūsų rezrvacijos patvirtinimas bus atsiųstas į nurodytą el. paštą.', type: 'success' } });
+  })
 });
 
 app.listen(port, () => {
