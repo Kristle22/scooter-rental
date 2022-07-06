@@ -13,12 +13,24 @@ function Create() {
   const [lastUsed, setLastUsed] = useState('');
   const [totalRide, setTotalRide] = useState('');
 
+  const [divColor, setDivColor] = useState();
+
+  const changeColor = (e) => {
+    setColor(e.target.value);
+    const targetColor = koltColors.filter(
+      (c) => c.id === Number(e.target.value)
+    )[0].title;
+    setDivColor(targetColor);
+    console.log('divColor', divColor);
+  };
+
   const handleCreate = () => {
     const data = { regCode, isBusy, color, lastUsed, totalRide };
     setCreateData(data);
     setRegCode('');
     setIsBusy(1);
     setColor('0');
+    setDivColor();
     setLastUsed('');
     setTotalRide('');
   };
@@ -36,11 +48,8 @@ function Create() {
               <option value='0'>Busy</option>
             </select>
             <br />
-            <select
-              value={color.value}
-              onChange={(e) => setColor(e.target.value)}
-            >
-              <option value='0'>Choose color</option>
+            <select value={color} onChange={changeColor}>
+              <option defaultValue='0'>Choose color</option>
               {koltColors
                 ? koltColors.map((c) => (
                     <option
@@ -55,9 +64,18 @@ function Create() {
                   ))
                 : null}
             </select>
-            <label>Last Used:</label>
+            <div
+              style={{
+                backgroundColor: divColor,
+                borderRadius: '20px',
+                width: '20px',
+                height: '20px',
+              }}
+            ></div>
+            <label htmlFor='lu'>Last Used:</label>
             <input
-              type='date'
+              id='lu'
+              type='datetime-local'
               onChange={(e) => setLastUsed(e.target.value)}
               value={lastUsed}
             />

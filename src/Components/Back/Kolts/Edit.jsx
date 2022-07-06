@@ -11,6 +11,16 @@ function Edit() {
 
   const [chbox, setChbox] = useState(false);
   const [color, setColor] = useState('0');
+  const [divColor, setDivColor] = useState();
+
+  const changeColor = (e) => {
+    setColor(e.target.value);
+    const targetColor = koltColors.filter(
+      (c) => c.id === Number(e.target.value)
+    )[0].title;
+    setDivColor(targetColor);
+    console.log('divColor', divColor);
+  };
 
   const cbClick = () => {
     setChbox(!chbox);
@@ -24,10 +34,11 @@ function Edit() {
     setIsBusy(modalData.isBusy);
     // setColor(modalData.color);
     setColor(koltColors.filter((c) => modalData.color === c.title)[0]?.id ?? 0);
+    setDivColor(modalData.color);
     setLastUsed(modalData.lastUsed);
     setTotalRide(modalData.totalRide);
     setTotalRide('');
-  }, [modalData]);
+  }, [modalData, koltColors]);
   console.log('modalData', modalData);
 
   const handleEdit = () => {
@@ -47,22 +58,18 @@ function Edit() {
   }
 
   console.log('koltColors', koltColors);
-  console.log('color', color);
   return (
     <>
       <div className='modal-layer'>
         <div className='modal-cont'>
           <div className='modal'>
             <div className='left-side'>
-              <h2>User Info</h2>
+              <h2>User info:</h2>
               <h3>
-                Color:{' '}
-                <span>
-                  {/* {koltColors.map((c) => (color === c.id ? c.title : ''))} */}
-                </span>
-              </h3>
-              <h3>
-                User: <span></span>
+                name:{' '}
+                <i style={{ fontFamily: 'cursive', lineHeight: '20px' }}>
+                  John Doe
+                </i>
               </h3>
               <button
                 type='button'
@@ -110,47 +117,40 @@ function Edit() {
                     <label>Busy</label>
                   </div>
                 )}
-                <select
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                >
+                <select value={color} onChange={changeColor}>
                   <option value='0'>Choose color</option>
                   {koltColors
                     ? koltColors.map((c) => (
-                        <option
-                          key={c.id}
-                          value={c.id}
-                          style={{
-                            backgroundColor: c.title,
-                          }}
-                        >
-                          {c.title}
-                        </option>
+                        <>
+                          <option
+                            key={c.id}
+                            value={c.id}
+                            style={{
+                              backgroundColor: c.title,
+                            }}
+                          >
+                            {c.title}
+                          </option>
+                        </>
                       ))
                     : null}
                 </select>
-                {koltColors
-                  ? koltColors.map((c) =>
-                      c.id === color ? (
-                        <div
-                          key={c.id}
-                          style={{
-                            backgroundColor: c.title,
-                            borderRadius: '20px',
-                            width: '20px',
-                            height: '20px',
-                          }}
-                        ></div>
-                      ) : null
-                    )
-                  : null}
+                <div
+                  style={{
+                    backgroundColor: divColor,
+                    borderRadius: '20px',
+                    width: '20px',
+                    height: '20px',
+                  }}
+                ></div>
                 <h4>
                   Last Used:{' '}
                   <span className='lastUsed'>{modalData.lastUsed}</span>
                 </h4>
-                <label>Enter the date:</label>
+                <label htmlFor='lU'>Enter the date:</label>
                 <input
-                  type='date'
+                  id='lU'
+                  type='datetime-local'
                   value={lastUsed}
                   onChange={(e) => setLastUsed(e.target.value)}
                 />

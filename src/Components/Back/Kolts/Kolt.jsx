@@ -9,6 +9,16 @@ function Kolt({ kolt }) {
   const handleModal = () => {
     setModalData(kolt);
   };
+
+  // const dateFormat = new Intl.DateTimeFormat('en', {
+  //   year: 'numeric',
+  //   month: '2-digit',
+  //   day: '2-digit',
+  //   hour: '2-digit',
+  //   minute: '2-digit',
+  //   second: '2-digit',
+  // });
+  // console.log('DATE', kolt.lastUsed);
   return (
     <>
       <div className='flex-row'>
@@ -52,7 +62,10 @@ function Kolt({ kolt }) {
         ) : (
           <p className='isBusy'>busy</p>
         )}
-        <p>{kolt.lastUsed}</p>
+        <p>
+          {/* {new Date(kolt.lastUsed).toISOString().slice(0, 10)}{' '}
+          {new Date(kolt.lastUsed).toLocaleTimeString()} */}
+        </p>
         <p>{Number(kolt.totalRide).toFixed(2)} km.</p>
         <div className='btns'>
           <button type='button' className='edt' onClick={handleModal}>

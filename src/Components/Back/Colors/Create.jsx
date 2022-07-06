@@ -14,7 +14,7 @@ function CreateColors() {
   return (
     <>
       <div className='form-container'>
-        <div className='form'>
+        <div className='form color'>
           <h3>Insert COLT's Color</h3>
           <form>
             <label>Title</label>

@@ -1,14 +1,27 @@
 import { useContext } from 'react';
-import BackContext from '../BackContext';
+import FrontContext from '../FrontContext';
+
+// import BookGroup from './BookGroup';
 
 function Color({ color }) {
-  const { setDeleteKoltColors } = useContext(BackContext);
+  const { a } = useContext(FrontContext);
 
-  const handleDelete = () => {
-    setDeleteKoltColors(color);
-  };
   return (
     <>
+      <div
+        className='flex-row color'
+        style={{
+          diplay: 'flex',
+          width: '80%',
+          justifyContent: 'space-between',
+        }}
+      >
+        <h4>COLT Image</h4>
+        <h4>COLT Color</h4>
+        <h4>COLT's Count</h4>
+        <h4>BUSY</h4>
+        <h4>AVAILABLE</h4>
+      </div>
       <div
         className='flex-row color'
         style={{
@@ -42,26 +55,38 @@ function Color({ color }) {
             {color.title}
           </div>
         </div>
-        <p style={{ color: '#99bbd7d1', fontSize: '25px' }}>
+        <p
+          style={{
+            color: '#99bbd7d1',
+            fontSize: '30px',
+            fontWeight: 'bold',
+            fontFamily: 'cursive',
+          }}
+        >
           {color.kolts_count}
         </p>
-        <p style={{ color: '#ea766c', fontSize: '25px' }}>{color.busy}</p>
-        <p style={{ color: '#85c086', fontSize: '25px' }}>{color.ready}</p>
-      </div>
-      {color.busy === 0 || color.busy === null ? (
-        <div
-          className='btns'
-          style={{ width: '12%', alignItems: 'end', paddingRight: '10px' }}
+        <p
+          style={{
+            color: '#ea766c',
+            fontSize: '30px',
+            fontWeight: 'bold',
+            fontFamily: 'cursive',
+          }}
         >
-          <button type='button' className='dlt' onClick={handleDelete}>
-            <svg>
-              <use href='#Delete' />
-            </svg>
-          </button>
-        </div>
-      ) : (
-        ''
-      )}
+          {color.busy}
+        </p>
+        <p
+          style={{
+            color: '#85c086',
+            fontSize: '30px',
+            fontWeight: 'bold',
+            fontFamily: 'cursive',
+          }}
+        >
+          {color.ready}
+        </p>
+      </div>
+      {/* <BookGroup color={color} /> */}
     </>
   );
 }
