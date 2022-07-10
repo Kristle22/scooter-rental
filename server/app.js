@@ -26,10 +26,13 @@ app.get('/', (req, res) => {
 app.get('/paspirtukai', (req, res) => {
   const sql = `
   SELECT
-  k.id, c.title AS color, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide
+  k.id, c.title AS color, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
+  LEFT JOIN comments AS cm
+  ON k.id = cm.kolt_id
+  GROUP BY k.id
   `;
   con.query(sql, (err, result) => {
     if (err) throw err;
@@ -58,10 +61,10 @@ app.get('/spalvos', (req, res) => {
 app.post('/paspirtukai', (req, res) => {
   const sql = `
   INSERT INTO kolts
-  (id, regCode, isBusy, lastUsed, totalRide, color_id)
-  VALUES (?, ?, ?, ?, ?, ?)
+  (regCode, isBusy, lastUsed, totalRide, color_id)
+  VALUES (?, ?, ?, ?, ?)
   `;
-  con.query(sql, [req.body.id, req.body.regCode, req.body.isBusy, req.body.lastUsed ? req.body.lastUsed : '', req.body.totalRide ? req.body.totalRide : 0, req.body.color === '0' ? null : req.body.color], (err, result) => {
+  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed ? req.body.lastUsed : '', req.body.totalRide ? req.body.totalRide : 0, req.body.color === '0' ? null : req.body.color], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Naujas Kolt sekmingai sukurtas', type: 'success' } });
   })
@@ -121,11 +124,13 @@ app.put('/paspirtukai/:koltId', (req, res) => {
 app.get('/front/paspirtukai', (req, res) => {
   const sql = `
   SELECT
-  k.id, c.title AS color, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready
+  k.id, c.title AS color, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
-  GROUP BY color_id
+  LEFT JOIN comments AS cm
+  ON k.id = cm.kolt_id
+  GROUP BY k.id
   `;
   con.query(sql, (err, result) => {
     if (err) throw err;
@@ -154,7 +159,7 @@ app.get('/front/spalvos', (req, res) => {
 app.get('/front/rezervacijos', (req, res) => {
   const sql = `
   SELECT
-  r.id, pick_up_date, return_date, name, email, com, kolt_id
+  r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code
   FROM rental_info AS r
   LEFT JOIN kolts AS k
   ON r.kolt_id = k.id
@@ -165,7 +170,7 @@ app.get('/front/rezervacijos', (req, res) => {
   });
 });
 
-// CREATE FRONT REZERV INFO
+// CREATE FRONT Rental Info
 app.post('/front/rezervacijos', (req, res) => {
   const sql = `
   INSERT INTO rental_info
@@ -177,6 +182,45 @@ app.post('/front/rezervacijos', (req, res) => {
     res.send({ result, msg: { text: 'Jūsų rezrvacijos patvirtinimas bus atsiųstas į nurodytą el. paštą.', type: 'success' } });
   })
 });
+
+// CREATE FRONT COMMENT
+app.post('/front/komentarai', (req, res) => {
+  const sql = `
+  INSERT INTO comments
+  (comment, kolt_id)
+  VALUES (?, ?)
+  `;
+  con.query(sql, [req.body.comment, req.body.koltId], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Jusu komentaras issiustas. Dekojame uz atsiliepima!.', type: 'success' } });
+  })
+});
+
+// DELETE Comments
+app.delete('/komentarai/:comId', (req, res) => {
+  const sql = `
+  DELETE FROM comments
+  WHERE id = ?
+  `;
+  con.query(sql, [req.params.comId], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Komentaras yra istrintas.', type: 'danger' } });
+  })
+});
+
+// EDIT FRONT KOLT reitings
+app.put('/front/reitingai/:koltId', (req, res) => {
+  const sql = `
+  UPDATE kolts 
+  SET rates = rates + 1, rate_sum = rate_sum + ?
+  where id = ?
+  `;
+  con.query(sql, [req.body.rate, req.params.koltId], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Jusu balsas sekmingai iskaitytas. Aciu uz ivertinima!', type: 'info' } });
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Peleda klauso porto ${port}`)

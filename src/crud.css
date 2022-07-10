@@ -431,11 +431,15 @@ li.isBusy {
   background-color: #3b96e1d7;
   border: 5px solid #1970bb;
 }
-button.book {
-  font-size: 12px;
-  width: 60px;
-  height: 60px;
-  justify-self: end;
+div.btns.book {
+  justify-content: center;
+}
+button.edt.book,
+button.dlt.book,
+.book svg {
+  font-size: 18px;
+  width: 80px;
+  height: 80px;
   cursor: pointer;
 }
 
@@ -530,6 +534,97 @@ button.put.reg {
   font-size: 13px;
   width: 65px;
   box-shadow: 5px 5px 15px #232424d1;
+}
+
+/* COMMENT */
+.comment {
+  width: 90%;
+  border: 2px solid #8a858571;
+  border-radius: 5px;
+  padding: 10px;
+}
+.feedback {
+  justify-content: space-between;
+  display: flex;
+}
+.feedback .com {
+  width: 100%;
+}
+.feedback form {
+  min-width: 135px;
+  max-width: 600px;
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+}
+.comment label {
+  font-family: cursive;
+  margin: 20px 0 10px 0;
+}
+.feedback form .rateIt {
+  display: flex;
+  justify-items: center;
+  align-items: flex-start;
+  padding-left: 20px;
+}
+.rateIt img {
+  width: 55%;
+}
+form .rateIt select {
+  font-size: 25px;
+  width: 60px;
+  margin-left: 10px;
+}
+.feedback form h1 {
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
+  font-family: cursive;
+  font-size: 50px;
+  border-radius: 5px;
+  /* color: #d49111;
+  box-shadow: 5px 10px 20px #d4911c; */
+}
+h1 b {
+  padding-right: 7px;
+}
+.comment select {
+  border-radius: 5px;
+  background-color: #333;
+  border: 2px solid #777;
+}
+.comment textarea {
+  height: 85px;
+  width: 100%;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: 2px solid #1b8b19;
+  resize: none;
+  padding: 10px;
+}
+.comment button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  align-self: flex-end;
+}
+.comment ul {
+  width: 100%;
+  padding: 10px 20px 10px 20px;
+}
+.comment ul li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  text-align: left;
+  font-size: 17px;
+}
+.comment li {
+  border: 1px solid #8a858571;
+  border-radius: 5px;
+  padding: 10px;
 }
 
 @media screen and (max-width: 500px) {

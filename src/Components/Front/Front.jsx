@@ -21,6 +21,10 @@ function Front() {
 
   const [message, setMessage] = useState(null);
 
+  const [createComment, setCreateComment] = useState(null);
+
+  const [createRates, setCreateRates] = useState(null);
+
   const sort = (e) => {
     const sortOrder = e.target.value;
     setselectRide(sortOrder);
@@ -40,15 +44,12 @@ function Front() {
   useEffect(() => {
     axios.get('http://localhost:3004/front/spalvos').then((res) => {
       setKoltColors(res.data);
-      console.log('resData', res.data);
     });
   }, [lastUpdate]);
-  console.log('FRONT Colors', koltColors);
 
   // Read FRONT kolts
   useEffect(() => {
     axios.get('http://localhost:3004/front/paspirtukai').then((res) => {
-      console.log(res.data);
       const action = {
         type: 'kolts_list',
         payload: res.data,
@@ -56,8 +57,6 @@ function Front() {
       dispachKolts(action);
     });
   }, [lastUpdate]);
-
-  console.log('kolts', kolts);
 
   // Read FRONT rental info
   useEffect(() => {
@@ -74,10 +73,36 @@ function Front() {
       .post('http://localhost:3004/front/rezervacijos', bookCreate)
       .then((res) => {
         showMessage(res.data.msg);
-        console.log('CREATE data', res.data);
         setLastUpdate(Date.now());
       });
   }, [bookCreate]);
+
+  // CREATE rental Info
+  useEffect(() => {
+    if (null === createComment) return;
+    axios
+      .post('http://localhost:3004/front/komentarai', createComment)
+      .then((res) => {
+        showMessage(res.data.msg);
+        console.log('CREATE comment', res.data);
+        setLastUpdate(Date.now());
+      });
+  }, [createComment]);
+
+  // CREATE RATING
+  useEffect(() => {
+    if (null === createRates) return;
+    axios
+      .put(
+        'http://localhost:3004/front/reitingai/' + createRates.id,
+        createRates
+      )
+      .then((res) => {
+        console.log('RATE', res.data);
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
+  }, [createRates]);
 
   return (
     <FrontContext.Provider
@@ -93,6 +118,8 @@ function Front() {
         sort,
         message,
         users,
+        setCreateComment,
+        setCreateRates,
       }}
     >
       <Crud />

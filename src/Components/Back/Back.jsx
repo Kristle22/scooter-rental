@@ -92,7 +92,6 @@ function Back({ show }) {
       setKoltColors(res.data);
     });
   }, [lastUpdate]);
-  console.log('kolt Colors', koltColors);
 
   // CREATE
   useEffect(() => {
@@ -116,6 +115,14 @@ function Back({ show }) {
       });
   }, [deleteKoltColors]);
 
+  // DELETE COMMENT
+  const handleDeleteComment = (id) => {
+    axios.delete('http://localhost:3004/komentarai/' + id).then((res) => {
+      showMessage(res.data.msg);
+      setLastUpdate(Date.now());
+    });
+  };
+
   return (
     <BackContext.Provider
       value={{
@@ -132,6 +139,7 @@ function Back({ show }) {
         koltColors,
         setCreateKoltColors,
         setDeleteKoltColors,
+        handleDeleteComment,
       }}
     >
       {show === 'admin' ? (

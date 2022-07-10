@@ -17,11 +17,11 @@ function User({ user }) {
         className='flex-row'
         style={{
           flexWrap: 'nowrap',
-          justifyContent: 'space-around',
+          justifyContent: 'space-evenly',
           width: '95%',
-          paddingLeft: '20px',
         }}
       >
+        <p>{user.kolt_code}</p>
         <p>
           {new Date(user.pick_up_date).toISOString().slice(0, 10)}{' '}
           {new Date(user.pick_up_date).toLocaleTimeString()}
@@ -49,7 +49,7 @@ function User({ user }) {
               onClick={handleDelete}
               style={{ fontSize: '11px', width: '65px', height: '65px' }}
             >
-              CANCEL YOUR ORDER
+              CANCEL AN ORDER
             </button>
           </div>
         </div>

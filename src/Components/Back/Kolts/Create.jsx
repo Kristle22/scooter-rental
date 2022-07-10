@@ -21,11 +21,16 @@ function Create() {
       (c) => c.id === Number(e.target.value)
     )[0].title;
     setDivColor(targetColor);
-    console.log('divColor', divColor);
   };
 
   const handleCreate = () => {
-    const data = { regCode, isBusy, color, lastUsed, totalRide };
+    const data = {
+      regCode,
+      isBusy,
+      lastUsed,
+      totalRide,
+      color: parseInt(color),
+    };
     setCreateData(data);
     setRegCode('');
     setIsBusy(1);
@@ -34,8 +39,7 @@ function Create() {
     setLastUsed('');
     setTotalRide('');
   };
-  console.log(color);
-
+  console.log('color', color);
   return (
     <>
       <div className='form-container'>

@@ -12,7 +12,7 @@ function List() {
         <h2>ADMIN COLT SCOOTER RENTAL</h2>
       </div>
       <div className='flex-card'>
-        <div className='flex-row'>
+        <div className='flex-row' style={{ width: '88%' }}>
           <h4>Colt Image</h4>
           <h4>Reg. Code</h4>
           <h4>Ready to use</h4>

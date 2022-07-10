@@ -10,15 +10,16 @@ function UserList() {
       <div className='heading'>
         <h2>List of Users:</h2>
       </div>
-      <div className='flex-card' style={{ padding: '20px' }}>
+      <div className='flex-card' style={{ padding: '10px 50px' }}>
         <div
           className='flex-row'
           style={{
-            marginLeft: '15px',
-            justifyContent: 'space-around',
-            width: '77%',
+            flexWrap: 'nowrap',
+            justifyContent: 'space-evenly',
+            width: '80%',
           }}
         >
+          <h4>Kolt Reg. Code</h4>
           <h4>Pick-up Date</h4>
           <h4>Return Date</h4>
           <h4>Name</h4>

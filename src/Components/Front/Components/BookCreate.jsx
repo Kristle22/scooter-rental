@@ -9,6 +9,7 @@ function BookCreate({ kolt }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comments, setComments] = useState('');
+  const [isBusy, setIsBusy] = useState(1);
 
   useEffect(() => {
     if (null === bookModal) {
@@ -20,13 +21,12 @@ function BookCreate({ kolt }) {
     setEmail('');
     setComments('');
   }, [bookModal]);
-  // console.log('bookModal', bookModal);
 
   const handleReserve = () => {
     const data = {
-      id: bookModal.koltId,
-      code: bookModal.koltCode,
       color: bookModal.koltColor,
+      koltId: bookModal.koltId,
+      koltisBusy: bookModal.koltisBusy,
       pickUpDate,
       returnDate,
       name,
@@ -36,6 +36,7 @@ function BookCreate({ kolt }) {
     console.log('DATA', data);
     setBookCreate(data);
     setBookModal(null);
+    setIsBusy('0');
   };
   if (null === bookModal) {
     return null;
@@ -58,7 +59,10 @@ function BookCreate({ kolt }) {
                 <span className='lastUsed reg'>
                   Registration Code: {bookModal.koltCode}
                 </span>
-                <h4 className='isAvailable reg'>
+                <h4
+                  className='isAvailable reg'
+                  style={{ width: 'fit-content' }}
+                >
                   {bookModal.koltColor ? bookModal.koltColor : 'random color'}
                 </h4>
               </div>

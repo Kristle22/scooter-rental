@@ -1,4 +1,20 @@
 function BookGroup({ color }) {
+  // const [user, setUser] = useState(null);
+  // const [selectId, setSelectId] = useState('0');
+  // const [selectCode, setSelectCode] = useState('0');
+
+  // const chooseKolt = (e) => {
+  //   setSelectId(e.target.value);
+  //   const regCodes = kolt.regCodes.split(',');
+  //   let code = '';
+  //   let count = 1;
+  //   for (let i = 0; i < regCodes.length; i++) {
+  //     count++;
+  //     code += regCodes.join('').slice(i * 8, count * 8);
+  //     setSelectCode(code);
+  //   }
+  // };
+
   return (
     <div className='flex-container group'>
       <ol>
