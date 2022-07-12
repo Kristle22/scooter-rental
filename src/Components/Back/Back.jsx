@@ -25,6 +25,8 @@ function Back({ show }) {
   const [createKoltColors, setCreateKoltColors] = useState(null);
   const [deleteKoltColors, setDeleteKoltColors] = useState(null);
 
+  const [users, setUsers] = useState(null);
+
   const sort = (e) => {
     const sortOrder = e.target.value;
     setselectRide(sortOrder);
@@ -123,6 +125,14 @@ function Back({ show }) {
     });
   };
 
+  // Read FRONT rental info
+  useEffect(() => {
+    axios.get('http://localhost:3004/rezervacijos').then((res) => {
+      console.log('USERS', res.data);
+      setUsers(res.data);
+    });
+  }, [lastUpdate]);
+
   return (
     <BackContext.Provider
       value={{
@@ -140,6 +150,7 @@ function Back({ show }) {
         setCreateKoltColors,
         setDeleteKoltColors,
         handleDeleteComment,
+        users,
       }}
     >
       {show === 'admin' ? (

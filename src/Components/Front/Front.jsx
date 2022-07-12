@@ -11,10 +11,12 @@ function Front() {
   const [kolts, dispachKolts] = useReducer(koltsReducer, []);
   const [koltColors, setKoltColors] = useState(null);
 
-  const [users, setUsers] = useState(null);
+  // const [users, setUsers] = useState(null);
+  const [editData, setEditData] = useState(null);
 
   const [bookCreate, setBookCreate] = useState(null);
   const [bookModal, setBookModal] = useState(null);
+  const [distanceModal, setDistanceModal] = useState(null);
 
   const [selectDate, setselectDate] = useState('Last Used');
   const [selectRide, setselectRide] = useState('Total Ride');
@@ -24,6 +26,8 @@ function Front() {
   const [createComment, setCreateComment] = useState(null);
 
   const [createRates, setCreateRates] = useState(null);
+
+  const [createDistance, setCreateDistance] = useState(null);
 
   const sort = (e) => {
     const sortOrder = e.target.value;
@@ -58,17 +62,30 @@ function Front() {
     });
   }, [lastUpdate]);
 
-  // Read FRONT rental info
+  // Edit
   useEffect(() => {
-    axios.get('http://localhost:3004/front/rezervacijos').then((res) => {
-      console.log('USERS', res.data);
-      setUsers(res.data);
-    });
-  }, [lastUpdate]);
+    if (null === editData) return;
+    console.log('EDITDATA', editData);
+    axios
+      .put('http://localhost:3004/paspirtukai/' + editData.id, editData)
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
+  }, [editData]);
+
+  // Read FRONT rental info
+  // useEffect(() => {
+  //   axios.get('http://localhost:3004/front/rezervacijos').then((res) => {
+  //     console.log('USERS', res.data);
+  //     setUsers(res.data);
+  //   });
+  // }, [lastUpdate]);
 
   // CREATE rental Info
   useEffect(() => {
     if (null === bookCreate) return;
+    console.log('BOOKCREATE', bookCreate);
     axios
       .post('http://localhost:3004/front/rezervacijos', bookCreate)
       .then((res) => {
@@ -77,7 +94,7 @@ function Front() {
       });
   }, [bookCreate]);
 
-  // CREATE rental Info
+  // CREATE Comments
   useEffect(() => {
     if (null === createComment) return;
     axios
@@ -104,6 +121,20 @@ function Front() {
       });
   }, [createRates]);
 
+  // CREATE DISTANCE
+  useEffect(() => {
+    if (null === createDistance) return;
+    axios
+      .put(
+        'http://localhost:3004/front/atstumas/' + createDistance.id,
+        createDistance
+      )
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
+  }, [createDistance]);
+
   return (
     <FrontContext.Provider
       value={{
@@ -112,12 +143,15 @@ function Front() {
         setBookCreate,
         bookModal,
         setBookModal,
-        // setEditData,
+        setCreateDistance,
+        distanceModal,
+        setDistanceModal,
+        setEditData,
         selectDate,
         selectRide,
         sort,
         message,
-        users,
+        // users,
         setCreateComment,
         setCreateRates,
       }}

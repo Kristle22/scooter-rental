@@ -2,14 +2,14 @@ import { useState, useEffect, useContext } from 'react';
 import FrontContext from '../FrontContext';
 
 function BookCreate({ kolt }) {
-  const { bookModal, setBookModal, setBookCreate } = useContext(FrontContext);
+  const { bookModal, setBookModal, setBookCreate, setEditData } =
+    useContext(FrontContext);
 
   const [pickUpDate, setPickUpDate] = useState('0');
   const [returnDate, setReturnDate] = useState('0');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comments, setComments] = useState('');
-  const [isBusy, setIsBusy] = useState(1);
 
   useEffect(() => {
     if (null === bookModal) {
@@ -24,19 +24,20 @@ function BookCreate({ kolt }) {
 
   const handleReserve = () => {
     const data = {
-      color: bookModal.koltColor,
-      koltId: bookModal.koltId,
-      koltisBusy: bookModal.koltisBusy,
+      koltColor: bookModal.koltColor,
+      id: bookModal.id,
+      isBusy: 0,
       pickUpDate,
       returnDate,
       name,
       email,
       comments,
     };
-    console.log('DATA', data);
+    console.log('isBusy', data.isBusy);
+    console.log('DATA', bookModal);
     setBookCreate(data);
     setBookModal(null);
-    setIsBusy('0');
+    setEditData(data);
   };
   if (null === bookModal) {
     return null;

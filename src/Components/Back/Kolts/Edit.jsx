@@ -32,9 +32,11 @@ function Edit() {
       return;
     }
     setIsBusy(modalData.isBusy);
-    // setColor(modalData.color);
-    setColor(koltColors.filter((c) => modalData.color === c.title)[0]?.id ?? 0);
-    setDivColor(modalData.color);
+    // setColor(modalData.koltColor);
+    setColor(
+      koltColors.filter((c) => modalData.koltColor === c.title)[0]?.id ?? 0
+    );
+    setDivColor(modalData.koltColor);
     setLastUsed(modalData.lastUsed);
     setTotalRide(modalData.totalRide);
     setTotalRide('');
@@ -43,12 +45,12 @@ function Edit() {
 
   const handleEdit = () => {
     const data = {
-      isBusy,
-      color,
-      lastUsed,
-      totalRide: Number(modalData.totalRide) + Number(totalRide),
       id: modalData.id,
       regCode: modalData.regCode,
+      isBusy,
+      lastUsed,
+      totalRide: Number(modalData.totalRide) + Number(totalRide),
+      color,
     };
     setEditData(data);
     setModalData(null);
@@ -64,13 +66,40 @@ function Edit() {
         <div className='modal-cont'>
           <div className='modal'>
             <div className='left-side'>
-              <h2>User info:</h2>
-              <h3>
-                name:{' '}
-                <i style={{ fontFamily: 'cursive', lineHeight: '20px' }}>
-                  John Doe
-                </i>
-              </h3>
+              <h2>Rezervation info:</h2>
+              <div className='user-info'>
+                <p>
+                  <b>pick-up:</b>{' '}
+                  <i>
+                    {modalData.startDate &&
+                      new Date(modalData.startDate).toLocaleString()}
+                  </i>
+                </p>
+                <p>
+                  <b>return:</b>{' '}
+                  <i>
+                    {modalData.finishDate &&
+                      new Date(modalData.finishDate).toLocaleString()}
+                  </i>
+                </p>
+                <p>
+                  <b>name:</b> <i>{modalData.userName}</i>
+                </p>
+                <p>
+                  <b>email:</b> <i>{modalData.userEmail}</i>
+                </p>
+              </div>
+              <i
+                style={{
+                  fontSize: '12px',
+                  color: '#fff',
+                  display: 'flex',
+                  marginLeft: '10px',
+                }}
+              >
+                comment:
+              </i>
+              <div className='user-com'>{modalData.userCom}</div>
               <button
                 type='button'
                 className='close-x'
@@ -82,7 +111,7 @@ function Edit() {
                 className='scooter'
                 src={
                   modalData.img
-                    ? require(`../../../img/${modalData.color}.png`)
+                    ? require(`../../../img/${modalData.koltColor}.png`)
                     : require('../../../img/kick-scooter.png')
                 }
                 alt='scooter'

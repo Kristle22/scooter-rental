@@ -1,9 +1,10 @@
 import { useContext, useState } from 'react';
 import FrontContext from '../FrontContext';
 import BookCreate from './BookCreate';
+import DistanceRecord from './DistanceRecord';
 
 function Kolt({ kolt }) {
-  const { setBookModal, setCreateComment, setCreateRates } =
+  const { setBookModal, setDistanceModal, setCreateComment, setCreateRates } =
     useContext(FrontContext);
 
   const [comment, setComment] = useState('');
@@ -11,14 +12,22 @@ function Kolt({ kolt }) {
 
   const handleModal = () => {
     setBookModal({
-      koltId: kolt.id,
-      koltColor: kolt.color,
-      koltCode: kolt.regCode,
-      koltIsBusy: kolt.isBusy,
+      id: kolt.id,
+      koltColor: kolt.koltColor,
+      regCode: kolt.regCode,
+      isBusy: kolt.isBusy,
     });
   };
 
-  const handleBookChange = () => {};
+  const handleDistance = () => {
+    setDistanceModal({
+      koltId: kolt.id,
+      koltColor: kolt.koltColor,
+      regCode: kolt.regCode,
+      isBusy: kolt.isBusy,
+      totalRide: kolt.totalRide,
+    });
+  };
 
   const handleComment = () => {
     setCreateComment({
@@ -76,7 +85,7 @@ function Kolt({ kolt }) {
           {kolt.img ? (
             <img
               style={{ width: '16%', borderRadius: '5px' }}
-              src={require(`../../../img/${kolt.color}.png`)}
+              src={require(`../../../img/${kolt.koltColor}.png`)}
               alt='scooter_image'
             />
           ) : (
@@ -99,12 +108,14 @@ function Kolt({ kolt }) {
                 width: '70px',
                 height: '70px',
                 lineHeight: '70px',
-                backgroundColor: kolt.color,
-                color: kolt.color === 'white' ? 'black' : 'white',
-                boxShadow: `2px 3px 20px ${kolt.color ? kolt.color : '#999'} `,
+                backgroundColor: kolt.koltColor,
+                color: kolt.koltColor === 'white' ? 'black' : 'white',
+                boxShadow: `2px 3px 20px ${
+                  kolt.koltColor ? kolt.koltColor : '#999'
+                } `,
               }}
             >
-              {kolt.color ? kolt.color : 'random'}
+              {kolt.koltColor ? kolt.koltColor : 'random'}
             </div>
           </div>
           {kolt.isBusy === 1 ? (
@@ -123,7 +134,7 @@ function Kolt({ kolt }) {
               <button
                 type='button'
                 className='dlt book'
-                onClick={handleBookChange}
+                onClick={handleDistance}
               >
                 <svg>
                   <use href='#book-edt' />
@@ -208,6 +219,7 @@ function Kolt({ kolt }) {
         </div>
       </div>
       <BookCreate />
+      <DistanceRecord />
     </>
   );
 }

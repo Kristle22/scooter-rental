@@ -26,12 +26,14 @@ app.get('/', (req, res) => {
 app.get('/paspirtukai', (req, res) => {
   const sql = `
   SELECT
-  k.id, c.title AS color, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id
+  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
   LEFT JOIN comments AS cm
   ON k.id = cm.kolt_id
+  LEFT JOIN rental_info AS r
+  ON k.id = r.kolt_id
   GROUP BY k.id
   `;
   con.query(sql, (err, result) => {
@@ -124,7 +126,7 @@ app.put('/paspirtukai/:koltId', (req, res) => {
 app.get('/front/paspirtukai', (req, res) => {
   const sql = `
   SELECT
-  k.id, c.title AS color, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum
+  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -156,7 +158,7 @@ app.get('/front/spalvos', (req, res) => {
 });
 
 // READ FRONT Rental info
-app.get('/front/rezervacijos', (req, res) => {
+app.get('/rezervacijos', (req, res) => {
   const sql = `
   SELECT
   r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code
@@ -174,10 +176,10 @@ app.get('/front/rezervacijos', (req, res) => {
 app.post('/front/rezervacijos', (req, res) => {
   const sql = `
   INSERT INTO rental_info
-  (id, pick_up_date, return_date, name, email, com, kolt_id)
-  VALUES (?, ?, ?, ?, ?, ?, ?)
+  (pick_up_date, return_date, name, email, com, kolt_id)
+  VALUES (?, ?, ?, ?, ?, ?)
   `;
-  con.query(sql, [req.body.id, req.body.pickUpDate, req.body.returnDate, req.body.name, req.body.email, req.body.comments, req.body.koltId], (err, result) => {
+  con.query(sql, [req.body.pickUpDate, req.body.returnDate, req.body.name, req.body.email, req.body.comments, req.body.id], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Jūsų rezrvacijos patvirtinimas bus atsiųstas į nurodytą el. paštą.', type: 'success' } });
   })
@@ -218,6 +220,19 @@ app.put('/front/reitingai/:koltId', (req, res) => {
   con.query(sql, [req.body.rate, req.params.koltId], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Jusu balsas sekmingai iskaitytas. Aciu uz ivertinima!', type: 'info' } });
+  });
+});
+
+// EDIT FRONT KOLT distance
+app.put('/atstumas/:koltId', (req, res) => {
+  const sql = `
+  UPDATE kolts 
+  SET totalRide = ?
+  where id = ?
+  `;
+  con.query(sql, [req.body.distance, req.params.koltId], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Jusu nuvaziuotas atstumas sekmingai irasytas.', type: 'info' } });
   });
 });
 

@@ -10,7 +10,7 @@ function Crud() {
       <div className='container'>
         {/* <ColorList /> */}
         <KoltList />
-        <UserList />
+        {/* <UserList /> */}
         <Message />
       </div>
     </>

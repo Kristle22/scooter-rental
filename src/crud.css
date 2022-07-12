@@ -294,6 +294,25 @@ button.put {
   font-family: cursive;
   width: 45%;
 }
+.user-com {
+  min-height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dotted #fff;
+  border-radius: 5px;
+  margin: 10px 15px;
+}
+.user-info {
+  padding: 0 20px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.left-side p {
+  font-family: cursive;
+  line-height: 25px;
+  margin: 10px 0;
+}
 
 .left-side h2 {
   margin-bottom: 10px;

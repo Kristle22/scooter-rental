@@ -26,7 +26,7 @@ function Kolt({ kolt }) {
         <div className='flex-row'>
           <span
             style={{
-              backgroundColor: kolt.color ? kolt.color : null,
+              backgroundColor: kolt.kolColor ? kolt.koltColor : null,
               padding: '3px 10px',
               borderRadius: '50%',
               width: '20px',
@@ -35,19 +35,17 @@ function Kolt({ kolt }) {
               marginLeft: '-5px',
               marginTop: '-5px',
             }}
-          >
-            {/* {kolt.color ? kolt.color : 'Random'} */}
-          </span>
+          ></span>
           <div
             style={{
               width: '16%',
-              color: kolt.color === 'white' ? 'black' : 'white',
+              color: kolt.koltColor === 'white' ? 'black' : 'white',
             }}
           >
             {kolt.img ? (
               <img
                 style={{ width: '100%', borderRadius: '5px' }}
-                src={require(`../../../img/${kolt.color}.png`)}
+                src={require(`../../../img/${kolt.koltColor}.png`)}
                 alt='scoter_image'
               />
             ) : (
