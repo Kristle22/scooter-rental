@@ -2,11 +2,18 @@ import { useState, useEffect, useContext } from 'react';
 import FrontContext from '../FrontContext';
 
 function BookCreate({ kolt }) {
-  const { bookModal, setBookModal, setBookCreate, setEditData } =
-    useContext(FrontContext);
+  const {
+    bookModal,
+    setBookModal,
+    setBookCreate,
+    setEditData,
+    koltColors,
+    setColor,
+    color,
+  } = useContext(FrontContext);
 
-  const [pickUpDate, setPickUpDate] = useState('0');
-  const [returnDate, setReturnDate] = useState('0');
+  const [pickUpDate, setPickUpDate] = useState(0);
+  const [returnDate, setReturnDate] = useState(0);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comments, setComments] = useState('');
@@ -15,17 +22,24 @@ function BookCreate({ kolt }) {
     if (null === bookModal) {
       return;
     }
+    setColor(
+      koltColors.filter((c) => bookModal.koltColor === c.title)[0]?.id ?? null
+    );
     setPickUpDate('');
     setReturnDate('');
     setName('');
     setEmail('');
     setComments('');
-  }, [bookModal]);
+  }, [bookModal, setColor, koltColors]);
+
+  // console.log('DATA', bookModal);
 
   const handleReserve = () => {
     const data = {
-      koltColor: bookModal.koltColor,
       id: bookModal.id,
+      regCode: bookModal.regCode,
+      koltColor: bookModal.koltColor,
+      color,
       isBusy: 0,
       pickUpDate,
       returnDate,
@@ -33,11 +47,10 @@ function BookCreate({ kolt }) {
       email,
       comments,
     };
-    console.log('isBusy', data.isBusy);
-    console.log('DATA', bookModal);
+    // console.log('FRONT COLOR', color);
+    setEditData(data);
     setBookCreate(data);
     setBookModal(null);
-    setEditData(data);
   };
   if (null === bookModal) {
     return null;
@@ -58,7 +71,7 @@ function BookCreate({ kolt }) {
             <form className='reg'>
               <div className='regInfo'>
                 <span className='lastUsed reg'>
-                  Registration Code: {bookModal.koltCode}
+                  Registration Code: {bookModal.regCode}
                 </span>
                 <h4
                   className='isAvailable reg'

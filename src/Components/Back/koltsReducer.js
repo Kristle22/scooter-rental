@@ -3,7 +3,8 @@ function koltsReducer(state, action) {
 
   switch (action.type) {
     case 'kolts_list':
-      newState = action.payload;
+      newState = action.payload.map((k, i) => ({ ...k, row: i }));
+      console.log(newState);
       break;
     case 'sort_km_asc':
       newState = [...state].sort((a, b) => a.totalRide - b.totalRide);

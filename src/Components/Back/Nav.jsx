@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import Message from './Message';
 
 function Nav() {
@@ -17,7 +17,7 @@ function Nav() {
           className='nav-link'
           style={({ isActive }) => (isActive ? { color: 'crimson' } : null)}
         >
-          Colt features
+          Colts' status
         </NavLink>
         <NavLink
           to='/admin/kolts'
@@ -26,6 +26,33 @@ function Nav() {
         >
           COLTS
         </NavLink>
+        <NavLink
+          to='/admin/rezervations'
+          className='nav-link'
+          style={({ isActive }) => (isActive ? { color: 'crimson' } : null)}
+        >
+          Rezervations
+        </NavLink>
+        <NavLink
+          to='/admin/comments'
+          className='nav-link'
+          style={({ isActive }) => (isActive ? { color: 'crimson' } : null)}
+        >
+          Comments
+        </NavLink>
+        <NavLink
+          to='/admin/fancy-com'
+          className='nav-link'
+          style={({ isActive }) => (isActive ? { color: 'crimson' } : null)}
+        >
+          Fancy Com
+        </NavLink>
+        <Link
+          to='/logout'
+          style={{ width: '14%', textDecoration: 'underline' }}
+        >
+          Logout
+        </Link>
       </nav>
       <Message />
     </>

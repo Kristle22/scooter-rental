@@ -1,9 +1,6 @@
 import { useContext } from 'react';
 import Kolt from './Kolt';
 import BackContext from '../BackContext';
-import SortBtns from './SortBtns';
-import Filter from './Filter';
-import Search from './Search';
 
 function List() {
   const { kolts } = useContext(BackContext);
@@ -11,16 +8,12 @@ function List() {
   return (
     <>
       <div className='heading'>
-        <h2>ADMIN COLT SCOOTER RENTAL</h2>
+        <h2>COMMENTS</h2>
       </div>
       <div className='flex-card'>
-        <div className='flex-row' style={{ width: '88%' }}>
+        <div className='flex-row' style={{ width: '100%' }}>
           <h4>Colt Image</h4>
           <h4>Reg. Code</h4>
-          <h4>Ready to use</h4>
-          <SortBtns />
-          <Filter />
-          <Search />
           <option value=''></option>
         </div>
         {kolts ? kolts.map((klt) => <Kolt key={klt.id} kolt={klt} />) : null}

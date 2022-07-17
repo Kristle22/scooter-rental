@@ -34,7 +34,7 @@ function Edit() {
     setIsBusy(modalData.isBusy);
     // setColor(modalData.koltColor);
     setColor(
-      koltColors.filter((c) => modalData.koltColor === c.title)[0]?.id ?? 0
+      koltColors.filter((c) => modalData.koltColor === c.title)[0]?.id ?? null
     );
     setDivColor(modalData.koltColor);
     setLastUsed(modalData.lastUsed);
@@ -47,6 +47,7 @@ function Edit() {
     const data = {
       id: modalData.id,
       regCode: modalData.regCode,
+      koltColor: modalData.koltColor,
       isBusy,
       lastUsed,
       totalRide: Number(modalData.totalRide) + Number(totalRide),

@@ -4,18 +4,25 @@ import BackContext from './BackContext';
 import Nav from './Nav';
 import ColorsCrud from './Colors/Crud';
 import KoltsCrud from './Kolts/Crud';
+import RezervationsCrud from './Rezervations/Crud';
+import CommentsCrud from './Comments/Crud';
+import FancyComCrud from './FancyCom/Crud';
 import axios from 'axios';
+import { authConfig } from '../../Functions/auth';
 
 function Back({ show }) {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
 
   const [createData, setCreateData] = useState(null);
+
   const [deleteData, setDeleteData] = useState(null);
   const [modalData, setModalData] = useState(null);
   const [editData, setEditData] = useState(null);
 
   const [selectDate, setselectDate] = useState('Last Used');
   const [selectRide, setselectRide] = useState('Total Ride');
+  const [filterColor, setFilterColor] = useState(0);
+  const [search, setSearch] = useState('');
 
   const [kolts, dispachKolts] = useReducer(koltsReducer, []);
 
@@ -26,6 +33,8 @@ function Back({ show }) {
   const [deleteKoltColors, setDeleteKoltColors] = useState(null);
 
   const [users, setUsers] = useState(null);
+
+  const [color, setColor] = useState('0');
 
   const sort = (e) => {
     const sortOrder = e.target.value;
@@ -44,32 +53,48 @@ function Back({ show }) {
   // /////////////KOLTS//////////////
   // Read
   useEffect(() => {
-    axios.get('http://localhost:3004/paspirtukai').then((res) => {
-      const action = {
-        type: 'kolts_list',
-        payload: res.data,
-      };
-      dispachKolts(action);
-    });
-  }, [lastUpdate]);
+    let query;
+    if (filterColor === 0 && !search) {
+      query = '';
+    } else if (filterColor) {
+      query = '?color-id=' + filterColor;
+    } else if (search) {
+      query = '?s=' + search;
+    }
 
-  console.log('kolts', kolts);
+    axios
+      .get('http://localhost:3003/paspirtukai' + query, authConfig())
+      .then((res) => {
+        const action = {
+          type: 'kolts_list',
+          payload: res.data,
+        };
+        dispachKolts(action);
+      });
+  }, [lastUpdate, filterColor, search]);
+
+  // console.log('kolts', kolts);
 
   // Create
   useEffect(() => {
     if (null === createData) return;
-    axios.post('http://localhost:3004/paspirtukai', createData).then((res) => {
-      showMessage(res.data.msg);
-      console.log('Message', res.data.msg);
-      setLastUpdate(Date.now());
-    });
+    axios
+      .post('http://localhost:3003/paspirtukai', createData, authConfig())
+      .then((res) => {
+        showMessage(res.data.msg);
+        console.log('Message', res.data.msg);
+        setLastUpdate(Date.now());
+      });
   }, [createData]);
 
   // Delete
   useEffect(() => {
     if (null === deleteData) return;
     axios
-      .delete('http://localhost:3004/paspirtukai/' + deleteData.id)
+      .delete(
+        'http://localhost:3003/paspirtukai/' + deleteData.id,
+        authConfig()
+      )
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -79,18 +104,23 @@ function Back({ show }) {
   // Edit
   useEffect(() => {
     if (null === editData) return;
+    console.log(editData);
     axios
-      .put('http://localhost:3004/paspirtukai/' + editData.id, editData)
+      .put(
+        'http://localhost:3003/paspirtukai/' + editData.id,
+        editData,
+        authConfig()
+      )
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
       });
   }, [editData]);
 
-  // /////////////KOLT COLOR//////////////
+  // /////////////KOLT COLOR/////////////
   // READ
   useEffect(() => {
-    axios.get('http://localhost:3004/spalvos').then((res) => {
+    axios.get('http://localhost:3003/spalvos', authConfig()).then((res) => {
       setKoltColors(res.data);
     });
   }, [lastUpdate]);
@@ -99,7 +129,7 @@ function Back({ show }) {
   useEffect(() => {
     if (null === createKoltColors) return;
     axios
-      .post('http://localhost:3004/spalvos', createKoltColors)
+      .post('http://localhost:3003/spalvos', createKoltColors, authConfig())
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -110,7 +140,10 @@ function Back({ show }) {
   useEffect(() => {
     if (null === deleteKoltColors) return;
     axios
-      .delete('http://localhost:3004/spalvos/' + deleteKoltColors.id)
+      .delete(
+        'http://localhost:3003/spalvos/' + deleteKoltColors.id,
+        authConfig()
+      )
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -119,25 +152,37 @@ function Back({ show }) {
 
   // DELETE COMMENT
   const handleDeleteComment = (id) => {
-    axios.delete('http://localhost:3004/komentarai/' + id).then((res) => {
-      showMessage(res.data.msg);
-      setLastUpdate(Date.now());
-    });
+    axios
+      .delete('http://localhost:3003/komentarai/' + id, authConfig())
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
   };
 
   // Read FRONT rental info
   useEffect(() => {
-    axios.get('http://localhost:3004/rezervacijos').then((res) => {
-      console.log('USERS', res.data);
-      setUsers(res.data);
-    });
-  }, [lastUpdate]);
+    let query;
+    if (!search) {
+      query = '';
+    } else {
+      query = '?s=' + search;
+    }
+    axios
+      .get('http://localhost:3003/rezervacijos' + query, authConfig())
+      .then((res) => {
+        console.log('USERS', res.data);
+        setUsers(res.data);
+      });
+  }, [lastUpdate, search]);
 
   return (
     <BackContext.Provider
       value={{
         kolts,
         setCreateData,
+        color,
+        setColor,
         setDeleteData,
         modalData,
         setModalData,
@@ -145,6 +190,9 @@ function Back({ show }) {
         selectDate,
         selectRide,
         sort,
+        filterColor,
+        setFilterColor,
+        setSearch,
         message,
         koltColors,
         setCreateKoltColors,
@@ -164,6 +212,12 @@ function Back({ show }) {
         <ColorsCrud />
       ) : show === 'kolts' ? (
         <KoltsCrud />
+      ) : show === 'rezervations' ? (
+        <RezervationsCrud />
+      ) : show === 'comments' ? (
+        <CommentsCrud />
+      ) : show === 'fancy-com' ? (
+        <FancyComCrud />
       ) : null}
     </BackContext.Provider>
   );

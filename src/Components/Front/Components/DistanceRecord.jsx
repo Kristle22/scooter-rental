@@ -2,23 +2,45 @@ import { useState, useEffect, useContext } from 'react';
 import FrontContext from '../FrontContext';
 
 function DistanceRecord({ kolt }) {
-  const { distanceModal, setDistanceModal, setCreateDistance } =
-    useContext(FrontContext);
+  const {
+    distanceModal,
+    setDistanceModal,
+    setCreateDistance,
+    setEditData,
+    color,
+    setColor,
+    koltColors,
+  } = useContext(FrontContext);
 
+  const [returnDate, setReturnDate] = useState(0);
   const [distance, setDistance] = useState(0);
-  // console.log(distanceModal);
+
   useEffect(() => {
     if (null === distanceModal) {
       return;
     }
+    setColor(
+      koltColors.filter((c) => distanceModal.koltColor === c.title)[0]?.id ??
+        null
+    );
     setDistance('');
-  }, [distanceModal]);
+    setReturnDate('');
+  }, [distanceModal, color, setColor, koltColors]);
 
+  // console.log('DATA', distanceModal);
   const handleRecord = () => {
     const data = {
+      userId: distanceModal.userId,
+      id: distanceModal.id,
+      regCode: distanceModal.regCode,
+      koltColor: distanceModal.koltColor,
+      isBusy: 1,
+      color,
       distance: Number(distance),
+      returnDate: returnDate ? returnDate : distanceModal.returnDate,
     };
-    console.log('DATA', distanceModal);
+    setEditData(data);
+    console.log(data);
     setCreateDistance(data);
     setDistanceModal(null);
   };
@@ -30,7 +52,7 @@ function DistanceRecord({ kolt }) {
     <>
       <div className='modal-layer'>
         <div className='modal-cont reg'>
-          <div className='modal reg'>
+          <div className='modal reg distance'>
             <button
               type='button'
               className='close-x reg'
@@ -41,36 +63,47 @@ function DistanceRecord({ kolt }) {
             <form className='reg'>
               <div className='regInfo'>
                 <span className='lastUsed reg'>
-                  Registration Code: {distanceModal.koltCode}
+                  Registration Code: {distanceModal.regCode}
                 </span>
                 <h4
                   className='isAvailable reg'
                   style={{ width: 'fit-content' }}
                 >
-                  {distanceModal.koltColor
-                    ? distanceModal.koltColor
-                    : 'random color'}
+                  {distanceModal.koltColor ? distanceModal.koltColor : 'random'}
                 </h4>
               </div>
-              <label>DISTANCE:</label>
-              <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <div style={{ margin: '20px 0', width: '75%' }}>
+                <label>RETURN:</label>
+                <span className='lastUsed reg'>
+                  Primary date:{' '}
+                  {new Date(distanceModal.returnDate).toLocaleString()}
+                </span>
                 <input
-                  style={{ display: 'block', width: '20%', height: '40px' }}
+                  type='datetime-local'
+                  value={returnDate}
+                  onChange={(e) => setReturnDate(e.target.value)}
+                />
+                <label>DISTANCE:</label>
+                <input
+                  style={{ display: 'block', width: '30%', height: '30px' }}
                   type='text'
                   placeholder='... km.'
                   value={distance}
                   onChange={(e) => setDistance(e.target.value)}
                 />
-                <p
-                  style={{
-                    width: '50%',
-                    fontFamily: 'cursive',
-                    textAlign: 'center',
-                  }}
-                >
-                  Hope enjoyed your trip! Thank's for choosing us!
-                </p>
               </div>
+              <p
+                style={{
+                  width: '50%',
+                  fontFamily: 'cursive',
+                  textAlign: 'center',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '45%',
+                }}
+              >
+                Hope enjoyed your trip! Thank's for choosing us!
+              </p>
               <div style={{ justifyContent: 'start' }} className='btns reg'>
                 <button
                   type='button'

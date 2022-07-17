@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
-const port = 3004;
+const port = 3003;
 
 const cors = require("cors");
 app.use(cors());
 const mysql = require("mysql");
+const md5 = require('js-md5');
+const uuid = require('uuid');
 app.use(
   express.urlencoded({
     extended: true,
@@ -18,15 +20,115 @@ const con = mysql.createConnection({
   password: "",
   database: "la_ma_kolts",
 });
-app.get('/', (req, res) => {
-  res.send('Welcome to our world!')
+
+const doAuth = function (req, res, next) {
+  if (0 === req.url.indexOf('/admin')) {
+    // admin
+    const sql = `
+      SELECT
+      name, role
+      FROM users
+      WHERE session = ?
+  `;
+    con.query(
+      sql, [req.headers['authorization'] || ''],
+      (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        if (!results.length || results[0].role !== 'admin') {
+          res.status(401).send({});
+          req.connection.destroy();
+        } else {
+          next();
+        }
+      }
+    );
+  } else if (0 === req.url.indexOf('/login-check') || 0 === req.url.indexOf('/login')) {
+    next();
+  } else {
+    // Front
+    const sql = `
+    SELECT
+    name, role
+    FROM users
+    WHERE session = ?
+`;
+    con.query(
+      sql, [req.headers['authorization'] || ''],
+      (err, results) => {
+        if (err) throw err;
+        if (!results.length) {
+          res.status(401).send({});
+          req.connection.destroy();
+        } else {
+          next();
+        }
+      }
+    );
+  }
+}
+app.use(doAuth)
+
+//Auth
+app.get("/login-check", (req, res) => {
+  let sql;
+  let requests;
+  if (req.query.role === 'admin') {
+    sql = `
+      SELECT
+      name
+      FROM users
+      WHERE session = ? AND role = ?
+      `;
+    requests = [req.headers['authorization'] || '', req.query.role];
+  } else {
+    sql = `
+      SELECT
+      name
+      FROM users
+      WHERE session = ?
+      `;
+    requests = [req.headers['authorization'] || ''];
+  }
+  con.query(sql, requests, (err, result) => {
+    if (err) throw err;
+    if (!result.length) {
+      res.send({ msg: 'error' });
+    } else {
+      res.send({ msg: 'ok' });
+    }
+  });
 });
+
+app.post("/login", (req, res) => {
+  const key = uuid.v4();
+  const sql = `
+  UPDATE users
+  SET session = ?
+  WHERE name = ? AND pass = ?
+`;
+  con.query(sql, [key, req.body.user, md5(req.body.pass)], (err, result) => {
+    if (err) throw err;
+    if (!result.affectedRows) {
+      res.send({ msg: 'error', key: '' });
+    } else {
+      res.send({ msg: 'ok', key });
+    }
+  });
+});
+
+// app.get('/', (req, res) => {
+//   res.send('Welcome to our world!')
+// });
 
 // READ KOLTS
 app.get('/paspirtukai', (req, res) => {
-  const sql = `
+  let sql;
+  let requests;
+  if (!req.query['color-id'] && !req.query['s']) {
+    sql = `
   SELECT
-  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom
+  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS com
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -36,7 +138,43 @@ app.get('/paspirtukai', (req, res) => {
   ON k.id = r.kolt_id
   GROUP BY k.id
   `;
-  con.query(sql, (err, result) => {
+    requests = [];
+  } else if (req.query['color-id']) {
+    sql = `
+  SELECT
+  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms
+  FROM kolts AS k
+  LEFT JOIN kolts_color AS c
+  ON k.color_id = c.id
+
+  LEFT JOIN comments AS cm
+  ON k.id = cm.kolt_id
+  LEFT JOIN rental_info AS r
+  ON k.id = r.kolt_id
+
+  WHERE k.color_id = ?
+  GROUP BY k.id
+  `;
+    requests = [req.query['color-id']];
+  } else {
+    sql = `
+    SELECT
+    k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms
+    FROM kolts AS k
+    LEFT JOIN kolts_color AS c
+    ON k.color_id = c.id
+  
+    LEFT JOIN comments AS cm
+    ON k.id = cm.kolt_id
+    LEFT JOIN rental_info AS r
+    ON k.id = r.kolt_id
+  
+    WHERE k.regCode LIKE ?
+    GROUP BY k.id
+    `;
+    requests = ['%' + req.query['s'] + '%'];
+  }
+  con.query(sql, requests, (err, result) => {
     if (err) throw err;
     res.send(result);
   });
@@ -86,12 +224,12 @@ app.post('/spalvos', (req, res) => {
 });
 
 // DELETE KOLT
-app.delete('/paspirtukai/:koltId', (req, res) => {
+app.delete('/paspirtukai/:id', (req, res) => {
   const sql = `
   DELETE FROM kolts
   WHERE id = ?
   `;
-  con.query(sql, [req.params.koltId], (err, result) => {
+  con.query(sql, [req.params.id], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Kolt istrintas is saraso', type: 'danger' } });
   })
@@ -110,13 +248,13 @@ app.delete('/spalvos/:colorId', (req, res) => {
 });
 
 // EDIT KOLT
-app.put('/paspirtukai/:koltId', (req, res) => {
+app.put('/paspirtukai/:id', (req, res) => {
   const sql = `
   UPDATE kolts 
   SET regCode = ?, isBusy = ?, lastUsed = ?, totalRide = ?, color_id = ?
   where id = ?
   `;
-  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed, req.body.totalRide, req.body.color === '0' ? null : req.body.color, req.params.koltId], (err, result) => {
+  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed, req.body.totalRide, req.body.color === '0' ? null : req.body.color, req.params.id], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Kolt duomenys sekmingai atnaujinti', type: 'info' } });
   });
@@ -126,7 +264,7 @@ app.put('/paspirtukai/:koltId', (req, res) => {
 app.get('/front/paspirtukai', (req, res) => {
   const sql = `
   SELECT
-  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum
+  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -157,16 +295,31 @@ app.get('/front/spalvos', (req, res) => {
   });
 });
 
-// READ FRONT Rental info
+// READ Rental info
 app.get('/rezervacijos', (req, res) => {
-  const sql = `
+  let sql;
+  let requests;
+  if (!req.query['s']) {
+    sql = `
   SELECT
-  r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code
+  r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code, distance
   FROM rental_info AS r
   LEFT JOIN kolts AS k
   ON r.kolt_id = k.id
   `;
-  con.query(sql, (err, result) => {
+    requests = [];
+  } else {
+    sql = `
+    SELECT
+    r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code, distance
+    FROM rental_info AS r
+    LEFT JOIN kolts AS k
+    ON r.kolt_id = k.id
+    WHERE k.regCode LIKE ?
+    `;
+    requests = ['%' + req.query['s'] + '%'];
+  }
+  con.query(sql, requests, (err, result) => {
     if (err) throw err;
     res.send(result);
   });
@@ -176,9 +329,9 @@ app.get('/rezervacijos', (req, res) => {
 app.post('/front/rezervacijos', (req, res) => {
   const sql = `
   INSERT INTO rental_info
-  (pick_up_date, return_date, name, email, com, kolt_id)
-  VALUES (?, ?, ?, ?, ?, ?)
-  `;
+      (pick_up_date, return_date, name, email, com, kolt_id)
+    VALUES(?, ?, ?, ?, ?, ?)
+      `;
   con.query(sql, [req.body.pickUpDate, req.body.returnDate, req.body.name, req.body.email, req.body.comments, req.body.id], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Jūsų rezrvacijos patvirtinimas bus atsiųstas į nurodytą el. paštą.', type: 'success' } });
@@ -189,10 +342,10 @@ app.post('/front/rezervacijos', (req, res) => {
 app.post('/front/komentarai', (req, res) => {
   const sql = `
   INSERT INTO comments
-  (comment, kolt_id)
-  VALUES (?, ?)
-  `;
-  con.query(sql, [req.body.comment, req.body.koltId], (err, result) => {
+      (comment, kolt_id)
+    VALUES(?, ?)
+      `;
+  con.query(sql, [req.body.comment, req.body.id], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Jusu komentaras issiustas. Dekojame uz atsiliepima!.', type: 'success' } });
   })
@@ -203,7 +356,7 @@ app.delete('/komentarai/:comId', (req, res) => {
   const sql = `
   DELETE FROM comments
   WHERE id = ?
-  `;
+      `;
   con.query(sql, [req.params.comId], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Komentaras yra istrintas.', type: 'danger' } });
@@ -211,32 +364,32 @@ app.delete('/komentarai/:comId', (req, res) => {
 });
 
 // EDIT FRONT KOLT reitings
-app.put('/front/reitingai/:koltId', (req, res) => {
+app.put('/front/reitingai/:id', (req, res) => {
   const sql = `
   UPDATE kolts 
   SET rates = rates + 1, rate_sum = rate_sum + ?
-  where id = ?
-  `;
-  con.query(sql, [req.body.rate, req.params.koltId], (err, result) => {
+      where id = ?
+        `;
+  con.query(sql, [req.body.rate, req.params.id], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Jusu balsas sekmingai iskaitytas. Aciu uz ivertinima!', type: 'info' } });
   });
 });
 
-// EDIT FRONT KOLT distance
-app.put('/atstumas/:koltId', (req, res) => {
+// EDIT FRONT rental-info distance
+app.put('/front/atstumas/:userId', (req, res) => {
   const sql = `
-  UPDATE kolts 
-  SET totalRide = ?
-  where id = ?
-  `;
-  con.query(sql, [req.body.distance, req.params.koltId], (err, result) => {
+  UPDATE rental_info 
+  SET distance = ?, return_date = ?
+      where id = ?
+        `;
+  con.query(sql, [req.body.distance, req.body.returnDate, req.params.userId], (err, result) => {
     if (err) throw err;
-    res.send({ result, msg: { text: 'Jusu nuvaziuotas atstumas sekmingai irasytas.', type: 'info' } });
+    res.send({ result, msg: { text: 'Jusu duomenys sekmingai irasyti. Aciu, kad renketes mus!', type: 'info' } });
   });
 });
 
 
 app.listen(port, () => {
-  console.log(`Peleda klauso porto ${port}`)
+  console.log(`Peleda klauso porto ${port} `)
 })

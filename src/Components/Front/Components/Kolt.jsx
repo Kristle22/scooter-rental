@@ -4,8 +4,13 @@ import BookCreate from './BookCreate';
 import DistanceRecord from './DistanceRecord';
 
 function Kolt({ kolt }) {
-  const { setBookModal, setDistanceModal, setCreateComment, setCreateRates } =
-    useContext(FrontContext);
+  const {
+    setBookModal,
+    setDistanceModal,
+    setCreateComment,
+    setCreateRates,
+    users,
+  } = useContext(FrontContext);
 
   const [comment, setComment] = useState('');
   const [rate, setRate] = useState('5');
@@ -20,19 +25,24 @@ function Kolt({ kolt }) {
   };
 
   const handleDistance = () => {
+    const userId = users.filter((u) => u.kolt_id === kolt.id)[0].id;
+
+    const returnPrimary = users.filter((u) => u.kolt_id === kolt.id)[0]
+      .return_date;
     setDistanceModal({
-      koltId: kolt.id,
+      userId: userId,
+      returnDate: returnPrimary,
+      id: kolt.id,
       koltColor: kolt.koltColor,
       regCode: kolt.regCode,
       isBusy: kolt.isBusy,
-      totalRide: kolt.totalRide,
     });
   };
 
   const handleComment = () => {
     setCreateComment({
       comment,
-      koltId: kolt.id,
+      id: kolt.id,
     });
     setComment('');
   };
@@ -55,11 +65,7 @@ function Kolt({ kolt }) {
           <h4>COLT Reg. Code</h4>
           <h4>COLT Image</h4>
           <h4>COLT Color</h4>
-          {kolt.isBusy === 1 ? (
-            <h4>AVAILABLE</h4>
-          ) : (
-            <p>FINISH the TRIP and ENTER the DISTANCE</p>
-          )}
+          {kolt.isBusy === 1 ? <h4>AVAILABLE</h4> : <p>FINISH your TRIP?</p>}
         </div>
         <div
           className='flex-row color'

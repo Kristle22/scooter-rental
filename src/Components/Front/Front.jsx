@@ -4,18 +4,21 @@ import FrontContext from './FrontContext';
 // import Nav from './Nav';
 import Crud from './Components/Crud';
 import axios from 'axios';
+import { authConfig } from '../../Functions/auth';
 
 function Front() {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
 
   const [kolts, dispachKolts] = useReducer(koltsReducer, []);
+  const [koltsMap, setKoltsMap] = useState(null);
+
   const [koltColors, setKoltColors] = useState(null);
 
-  // const [users, setUsers] = useState(null);
   const [editData, setEditData] = useState(null);
 
   const [bookCreate, setBookCreate] = useState(null);
   const [bookModal, setBookModal] = useState(null);
+  const [createDistance, setCreateDistance] = useState(null);
   const [distanceModal, setDistanceModal] = useState(null);
 
   const [selectDate, setselectDate] = useState('Last Used');
@@ -24,10 +27,11 @@ function Front() {
   const [message, setMessage] = useState(null);
 
   const [createComment, setCreateComment] = useState(null);
-
   const [createRates, setCreateRates] = useState(null);
 
-  const [createDistance, setCreateDistance] = useState(null);
+  const [color, setColor] = useState('0');
+
+  const [users, setUsers] = useState(null);
 
   const sort = (e) => {
     const sortOrder = e.target.value;
@@ -46,20 +50,52 @@ function Front() {
 
   // Read FRONT colors
   useEffect(() => {
-    axios.get('http://localhost:3004/front/spalvos').then((res) => {
-      setKoltColors(res.data);
-    });
+    axios
+      .get('http://localhost:3003/front/spalvos', authConfig())
+      .then((res) => {
+        setKoltColors(res.data);
+      });
   }, [lastUpdate]);
 
   // Read FRONT kolts
   useEffect(() => {
-    axios.get('http://localhost:3004/front/paspirtukai').then((res) => {
-      const action = {
-        type: 'kolts_list',
-        payload: res.data,
-      };
-      dispachKolts(action);
-    });
+    axios
+      .get('http://localhost:3003/front/paspirtukai', authConfig())
+      .then((res) => {
+        const koltsMap = new Map();
+        res.data.forEach((klt) => {
+          let comment;
+          if (null === klt.com) {
+            comment = null;
+          } else {
+            comment = { id: klt.com_id, com: klt.com };
+          }
+          if (koltsMap.has(klt.id)) {
+            const kolt = koltsMap.get(klt.id);
+            if (comment) {
+              kolt.com.push(comment);
+            }
+          } else {
+            koltsMap.set(klt.id, { ...klt });
+            const kolt = koltsMap.get(klt.id);
+            kolt.com = [];
+            delete kolt.com_id;
+            if (comment) {
+              kolt.com.push(comment);
+            }
+          }
+        });
+        setKoltsMap(
+          [...koltsMap].map((klt) => klt[1]).map((k, i) => ({ ...k, row: i }))
+        );
+        console.log('KOLTS MAP', koltsMap);
+
+        const action = {
+          type: 'kolts_list',
+          payload: res.data,
+        };
+        dispachKolts(action);
+      });
   }, [lastUpdate]);
 
   // Edit
@@ -67,7 +103,11 @@ function Front() {
     if (null === editData) return;
     console.log('EDITDATA', editData);
     axios
-      .put('http://localhost:3004/paspirtukai/' + editData.id, editData)
+      .put(
+        'http://localhost:/paspirtukai/' + editData.id,
+        editData,
+        authConfig()
+      )
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -75,19 +115,25 @@ function Front() {
   }, [editData]);
 
   // Read FRONT rental info
-  // useEffect(() => {
-  //   axios.get('http://localhost:3004/front/rezervacijos').then((res) => {
-  //     console.log('USERS', res.data);
-  //     setUsers(res.data);
-  //   });
-  // }, [lastUpdate]);
+  useEffect(() => {
+    axios
+      .get('http://localhost:3003/rezervacijos', authConfig())
+      .then((res) => {
+        console.log('USERS', res.data);
+        setUsers(res.data);
+      });
+  }, [lastUpdate]);
 
   // CREATE rental Info
   useEffect(() => {
     if (null === bookCreate) return;
     console.log('BOOKCREATE', bookCreate);
     axios
-      .post('http://localhost:3004/front/rezervacijos', bookCreate)
+      .post(
+        'http://localhost:3003/front/rezervacijos',
+        bookCreate,
+        authConfig()
+      )
       .then((res) => {
         showMessage(res.data.msg);
         setLastUpdate(Date.now());
@@ -98,7 +144,11 @@ function Front() {
   useEffect(() => {
     if (null === createComment) return;
     axios
-      .post('http://localhost:3004/front/komentarai', createComment)
+      .post(
+        'http://localhost:3003/front/komentarai',
+        createComment,
+        authConfig()
+      )
       .then((res) => {
         showMessage(res.data.msg);
         console.log('CREATE comment', res.data);
@@ -111,8 +161,9 @@ function Front() {
     if (null === createRates) return;
     axios
       .put(
-        'http://localhost:3004/front/reitingai/' + createRates.id,
-        createRates
+        'http://localhost:3003/front/reitingai/' + createRates.id,
+        createRates,
+        authConfig()
       )
       .then((res) => {
         console.log('RATE', res.data);
@@ -126,8 +177,9 @@ function Front() {
     if (null === createDistance) return;
     axios
       .put(
-        'http://localhost:3004/front/atstumas/' + createDistance.id,
-        createDistance
+        'http://localhost:3003/front/atstumas/' + createDistance.userId,
+        createDistance,
+        authConfig()
       )
       .then((res) => {
         showMessage(res.data.msg);
@@ -139,7 +191,10 @@ function Front() {
     <FrontContext.Provider
       value={{
         kolts,
+        koltsMap,
         koltColors,
+        color,
+        setColor,
         setBookCreate,
         bookModal,
         setBookModal,
@@ -151,9 +206,9 @@ function Front() {
         selectRide,
         sort,
         message,
-        // users,
         setCreateComment,
         setCreateRates,
+        users,
       }}
     >
       <Crud />

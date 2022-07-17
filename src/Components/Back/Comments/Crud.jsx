@@ -1,6 +1,4 @@
-// import Message from '../Message';
 import Nav from '../Nav';
-import Create from './Create';
 import List from './List';
 
 function Crud() {
@@ -8,7 +6,6 @@ function Crud() {
     <>
       <div className='container'>
         <Nav />
-        <Create />
         <List />
       </div>
     </>

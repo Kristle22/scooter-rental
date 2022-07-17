@@ -9,15 +9,16 @@ function ColorList() {
       <div className='heading' style={{ margin: '30px 0 0 0' }}>
         <h2>Color List of current scooters</h2>
       </div>
-      <div className='flex-card'>
-        <div
-          className='flex-row color'
-          style={{
-            diplay: 'flex',
-            width: '80%',
-            justifyContent: 'space-between',
-          }}
-        >
+      <div
+        className='flex-card'
+        style={{
+          diplay: 'flex',
+          width: '90%',
+          paddingRight: '20px',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div className='flex-row color' style={{ width: '90%' }}>
           <h4>COLT Image</h4>
           <h4>COLT Color</h4>
           <h4>COLT's Count</h4>

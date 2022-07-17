@@ -2,8 +2,7 @@ import { useContext } from 'react';
 import BackContext from '../BackContext';
 
 function Kolt({ kolt }) {
-  const { setDeleteData, setModalData, handleDeleteComment } =
-    useContext(BackContext);
+  const { setDeleteData, setModalData } = useContext(BackContext);
   const handleDelete = () => {
     setDeleteData(kolt);
   };
@@ -26,7 +25,7 @@ function Kolt({ kolt }) {
         <div className='flex-row'>
           <span
             style={{
-              backgroundColor: kolt.kolColor ? kolt.koltColor : null,
+              backgroundColor: kolt.koltColor ? kolt.koltColor : null,
               padding: '3px 10px',
               borderRadius: '50%',
               width: '20px',
@@ -80,29 +79,6 @@ function Kolt({ kolt }) {
             </button>
           </div>
         </div>
-        <h2 style={{ flexDirection: 'row' }}>Comments({kolt.com_count})</h2>
-        <ul>
-          {kolt.coms &&
-            kolt.coms
-              .slice(0, -5)
-              .split('-^-^-,')
-              .map((c, i) => (
-                <li key={i}>
-                  {c}
-                  <button
-                    type='button'
-                    className='dlt'
-                    onClick={() =>
-                      handleDeleteComment(kolt.coms_id.split(',')[i])
-                    }
-                  >
-                    <svg>
-                      <use href='#Delete' />
-                    </svg>
-                  </button>
-                </li>
-              ))}
-        </ul>
       </div>
     </>
   );

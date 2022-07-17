@@ -13,25 +13,38 @@ function User({ user }) {
   return (
     <>
       <div
-        className='flex-row'
+        className='flex-row user'
         style={{
           flexWrap: 'nowrap',
-          justifyContent: 'space-evenly',
-          width: '95%',
         }}
       >
         <p>{user.kolt_code}</p>
         <p>
-          {new Date(user.pick_up_date).toISOString().slice(0, 10)}{' '}
-          {new Date(user.pick_up_date).toLocaleTimeString()}
+          {JSON.stringify(new Date(user.pick_up_date))
+            .slice(1, -6)
+            .replace('T', ' ')}
+          {/* {new Date(user.pick_up_date).toISOString().slice(0, 10)}{' '} */}
+          {/* {new Date(user.pick_up_date).toLocaleTimeString()} */}
         </p>
         <p>
-          {new Date(user.return_date).toISOString().slice(0, 10)}{' '}
-          {new Date(user.return_date).toLocaleTimeString()}
+          {JSON.stringify(new Date(user.return_date))
+            .slice(1, -6)
+            .replace('T', ' ')}
+          {/* {new Date(user.return_date).toISOString().slice(0, 10)}{' '} */}
+          {/* {new Date(user.return_date).toLocaleTimeString()} */}
         </p>
         <p>{user.name}</p>
         <p>{user.email}</p>
         <p>{user.com}</p>
+        <p
+          style={{
+            border: '2px solid #fff',
+            alignSelf: 'start',
+            borderRadius: '5px',
+          }}
+        >
+          {user.distance.toFixed(2)}
+        </p>
         <div className='btns book'>
           <div className='btns' style={{ flexDirection: 'column' }}>
             <button
@@ -46,9 +59,9 @@ function User({ user }) {
               type='button'
               className='dlt book'
               onClick={handleDelete}
-              style={{ fontSize: '11px', width: '65px', height: '65px' }}
+              style={{ fontSize: '14px', width: '65px', height: '65px' }}
             >
-              CANCEL AN ORDER
+              REM-OVE
             </button>
           </div>
         </div>

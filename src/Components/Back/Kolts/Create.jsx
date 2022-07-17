@@ -3,18 +3,19 @@ import rand from '../../../Functions/randNumbers';
 import BackContext from '../BackContext';
 
 function Create() {
-  const { setCreateData, koltColors } = useContext(BackContext);
+  const { setCreateData, koltColors, color, setColor } =
+    useContext(BackContext);
   console.log('koltColors_create', koltColors);
   const [regCode, setRegCode] = useState('KO' + rand(100000, 999999));
 
-  const [color, setColor] = useState('0');
+  // const [color, setColor] = useState('0');
 
   const [isBusy, setIsBusy] = useState(1);
   const [lastUsed, setLastUsed] = useState('');
   const [totalRide, setTotalRide] = useState('');
 
   const [divColor, setDivColor] = useState();
-
+  console.log('DIV COLOR', divColor);
   const changeColor = (e) => {
     setColor(e.target.value);
     const targetColor = koltColors.filter(
