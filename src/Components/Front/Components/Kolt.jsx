@@ -88,10 +88,15 @@ function Kolt({ kolt }) {
           >
             {kolt.regCode}
           </p>
-          {kolt.img ? (
+          {kolt.koltImg ? (
             <img
-              style={{ width: '16%', borderRadius: '5px' }}
-              src={require(`../../../img/${kolt.koltColor}.png`)}
+              style={{
+                width: '16%',
+                maxHeight: '120px',
+                objectFit: 'contain',
+                borderRadius: '5px',
+              }}
+              src={kolt.koltImg}
               alt='scooter_image'
             />
           ) : (

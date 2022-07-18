@@ -34,7 +34,9 @@ function Back({ show }) {
 
   const [users, setUsers] = useState(null);
 
-  const [color, setColor] = useState('0');
+  const [color, setColor] = useState(null);
+
+  const [deletePhoto, setDeletePhoto] = useState(null);
 
   const sort = (e) => {
     const sortOrder = e.target.value;
@@ -100,6 +102,17 @@ function Back({ show }) {
         setLastUpdate(Date.now());
       });
   }, [deleteData]);
+
+  // Delete Photo
+  useEffect(() => {
+    if (null === deletePhoto) return;
+    axios
+      .delete('http://localhost:3003/nuotrauka/' + deletePhoto.id, authConfig())
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
+  }, [deletePhoto]);
 
   // Edit
   useEffect(() => {
@@ -199,6 +212,7 @@ function Back({ show }) {
         setDeleteKoltColors,
         handleDeleteComment,
         users,
+        setDeletePhoto,
       }}
     >
       {show === 'admin' ? (

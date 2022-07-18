@@ -26,10 +26,10 @@ function Kolt({ kolt }) {
               color: kolt.koltColor === 'white' ? 'black' : 'white',
             }}
           >
-            {kolt.img ? (
+            {kolt.koltImg ? (
               <img
                 style={{ width: '100%', borderRadius: '5px' }}
-                src={require(`../../../img/${kolt.koltColor}.png`)}
+                src={kolt.koltImg}
                 alt='scoter_image'
               />
             ) : (

@@ -30,7 +30,7 @@ function Color({ color }) {
           flexWrap: 'nowrap',
         }}
       >
-        {color.imgPath ? (
+        {color.photo ? (
           <img
             style={{ width: '16%', borderRadius: '5px' }}
             src={require(`../../../img/${color.title}.png`)}
