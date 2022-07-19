@@ -10,6 +10,7 @@ function DistanceRecord({ kolt }) {
     color,
     setColor,
     koltColors,
+    showMessage,
   } = useContext(FrontContext);
 
   const [returnDate, setReturnDate] = useState(0);
@@ -29,6 +30,13 @@ function DistanceRecord({ kolt }) {
 
   // console.log('DATA', distanceModal);
   const handleRecord = () => {
+    if (distance === '') {
+      showMessage({
+        text: 'Prasau iveskite nuvaziuota atstuma',
+        type: 'info',
+      });
+      return;
+    }
     const data = {
       userId: distanceModal.userId,
       id: distanceModal.id,
@@ -98,7 +106,7 @@ function DistanceRecord({ kolt }) {
                   fontFamily: 'cursive',
                   textAlign: 'center',
                   position: 'absolute',
-                  top: '50%',
+                  top: '55%',
                   left: '45%',
                 }}
               >

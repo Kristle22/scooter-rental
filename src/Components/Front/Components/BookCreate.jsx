@@ -10,6 +10,7 @@ function BookCreate({ kolt }) {
     koltColors,
     setColor,
     color,
+    showMessage,
   } = useContext(FrontContext);
 
   const [pickUpDate, setPickUpDate] = useState(0);
@@ -35,6 +36,13 @@ function BookCreate({ kolt }) {
   // console.log('DATA', bookModal);
 
   const handleReserve = () => {
+    if (pickUpDate === 0 || name === '' || email === '') {
+      showMessage({
+        text: 'Prasau uzpildykite privalomus laukelius',
+        type: 'info',
+      });
+      return;
+    }
     const data = {
       id: bookModal.id,
       regCode: bookModal.regCode,
@@ -80,7 +88,7 @@ function BookCreate({ kolt }) {
                   {bookModal.koltColor ? bookModal.koltColor : 'random color'}
                 </h4>
               </div>
-              <label>PICK UP:</label>
+              <label>PICK UP*:</label>
               <input
                 type='datetime-local'
                 value={pickUpDate}
@@ -92,14 +100,14 @@ function BookCreate({ kolt }) {
                 value={returnDate}
                 onChange={(e) => setReturnDate(e.target.value)}
               />
-              <label>NAME:</label>
+              <label>NAME*:</label>
               <input
                 type='text'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder='Enter your name here...'
               />
-              <label>E-MAIL:</label>
+              <label>E-MAIL*:</label>
               <input
                 type='email'
                 value={email}
@@ -113,6 +121,7 @@ function BookCreate({ kolt }) {
                 placeholder='Write your comment here...'
               ></textarea>
               <div className='btns reg'>
+                <i style={{ fontSize: '16px' }}>*required fields</i>
                 <button
                   type='button'
                   className='close reg'

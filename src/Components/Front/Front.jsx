@@ -33,6 +33,9 @@ function Front() {
 
   const [users, setUsers] = useState(null);
 
+  const [filterColor, setFilterColor] = useState(0);
+  const [search, setSearch] = useState('');
+
   const sort = (e) => {
     const sortOrder = e.target.value;
     setselectRide(sortOrder);
@@ -59,8 +62,17 @@ function Front() {
 
   // Read FRONT kolts
   useEffect(() => {
+    let query;
+    if (filterColor === 0 && !search) {
+      query = '';
+    } else if (filterColor) {
+      query = '?color-id=' + filterColor;
+    } else if (search) {
+      query = '?s=' + search;
+    }
+
     axios
-      .get('http://localhost:3003/front/paspirtukai', authConfig())
+      .get('http://localhost:3003/front/paspirtukai' + query, authConfig())
       .then((res) => {
         const koltsMap = new Map();
         res.data.forEach((klt) => {
@@ -96,12 +108,12 @@ function Front() {
         };
         dispachKolts(action);
       });
-  }, [lastUpdate]);
+  }, [lastUpdate, filterColor, search]);
 
   // Edit
   useEffect(() => {
     if (null === editData) return;
-    console.log('EDITDATA', editData);
+    console.log('EDIT DATA', editData);
     axios
       .put(
         'http://localhost:/paspirtukai/' + editData.id,
@@ -209,6 +221,9 @@ function Front() {
         setCreateComment,
         setCreateRates,
         users,
+        showMessage,
+        setFilterColor,
+        setSearch,
       }}
     >
       <Crud />

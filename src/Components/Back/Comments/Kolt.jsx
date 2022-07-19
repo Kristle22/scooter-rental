@@ -8,37 +8,39 @@ function Kolt({ kolt }) {
     <>
       <div className='comment'>
         <div className='flex-row'>
-          <span
-            style={{
-              backgroundColor: kolt.koltColor ? kolt.koltColor : null,
-              padding: '3px 10px',
-              borderRadius: '50%',
-              width: '20px',
-              height: '20px',
-              position: 'absolute',
-              marginLeft: '-5px',
-              marginTop: '-5px',
-            }}
-          ></span>
           <div
             style={{
+              position: 'relative',
               width: '16%',
               color: kolt.koltColor === 'white' ? 'black' : 'white',
             }}
           >
-            {kolt.img ? (
-              <img
-                style={{ width: '100%', borderRadius: '5px' }}
-                src={require(`../../../img/${kolt.koltColor}.png`)}
-                alt='scoter_image'
-              />
-            ) : (
-              <img
-                style={{ width: '100%', borderRadius: '5px' }}
-                src={require('../../../img/Envy-Colt2.png')}
-                alt='scooters'
-              />
-            )}
+            <span
+              style={{
+                backgroundColor: kolt.koltColor ? kolt.koltColor : null,
+                padding: '3px 10px',
+                borderRadius: '50%',
+                width: '20px',
+                height: '20px',
+                position: 'absolute',
+                marginLeft: '-5px',
+                marginTop: '-5px',
+              }}
+            ></span>
+            <img
+              style={{
+                width: '100%',
+                maxHeight: '120px',
+                objectFit: 'contain',
+                borderRadius: '5px',
+              }}
+              src={
+                kolt.koltImg
+                  ? kolt.koltImg
+                  : require('../../../img/Envy-Colt2.png')
+              }
+              alt='scoter_image'
+            />
           </div>
           <h2
             style={{ margin: '20px', fontFamily: 'cursive', fontSize: '30px' }}

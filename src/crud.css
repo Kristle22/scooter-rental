@@ -55,13 +55,18 @@ body {
   margin: 0 0 0 10px;
 }
 .form {
+  display: inline-block;
   width: 75%;
+  height: 100%;
+  max-height: 515px;
   font-style: italic;
-  gap: 15px 0;
-  padding: 12px;
+  padding: 15px;
   background-color: #5a5f6f;
   color: #fff;
   border-radius: 3px;
+}
+.form.create {
+  overflow-y: scroll;
 }
 
 input,
@@ -246,10 +251,13 @@ button.dlt {
   transform: scale(1.1);
   box-shadow: 2px 1px 10px #85c086;
 }
+.btns.add {
+  display: flex;
+  justify-content: end;
+}
 button.put {
   background-color: #99bbd7d1;
   border: 5px solid #1970bb;
-  float: right;
 }
 .put:hover,
 .edt.book.com:hover {
@@ -273,35 +281,43 @@ button.put {
   position: relative;
   display: flex;
   width: 90vw;
-  height: 90v;
+  height: 90vh;
   max-width: 500px;
-  background-color: #5db75f;
   align-items: center;
   border-radius: 5px;
 }
-.right-side.form {
-  font-style: italic;
-  gap: 15px 0;
-  background-color: #5a5f6f;
-  border-radius: 0;
-  color: #fff;
-}
-.right-side.form h4 {
-  font-size: 16px;
-}
-.right-side.form label {
-  font-size: 16px;
+.modal .left-side {
+  width: 45%;
+  height: 100%;
+  background-color: #5db75f;
+  padding: 20px 10px;
+  text-align: center;
+  font-family: cursive;
+  overflow-y: scroll;
 }
 .modal .right-side {
   width: 55%;
-  height: 90vh;
+  min-height: 100%;
+  background-color: #5a5f6f;
+  font-style: italic;
+  border-radius: 0;
+  color: #fff;
+  text-align: left;
 }
-.modal .left-side {
-  text-align: center;
-  font-family: cursive;
-  width: 45%;
+.right-side.form i {
+  font-size: 16px;
+  margin: 10px 0;
 }
-.user-com {
+/* .right-side.form form {
+  overflow-wrap: break-word;
+  overflow-y: scroll;
+} */
+.right-side.form label {
+  font-size: 18px;
+  padding: 10px 0;
+  font-weight: bold;
+}
+.left-side .user-com {
   min-height: 70px;
   display: flex;
   justify-content: center;
@@ -311,18 +327,19 @@ button.put {
   border: 2px dotted #fff;
   color: #fff;
   border-radius: 5px;
-  margin: 10px 15px;
+  margin: 10px 15px 25px 10px;
   padding: 3px;
 }
 .user-info {
-  padding: 0 20px;
-  margin-bottom: 20px;
+  padding: 0 10px;
   text-align: left;
+}
+div.user-info b,
+div.user-info i {
+  font-size: 16px;
 }
 .left-side p {
   font-family: cursive;
-  line-height: 25px;
-  margin: 10px 0;
 }
 .left-side b {
   text-decoration: underline;
@@ -335,9 +352,6 @@ button.put {
 .left-side h3 {
   margin: 10px 0;
 }
-.left-side h4 {
-  margin: 16px;
-}
 
 fieldset {
   padding: 0 0 10px 10px;
@@ -345,13 +359,15 @@ fieldset {
 
 .statistic {
   display: flex;
+  width: 55%;
+  flex-direction: column;
+  align-items: flex-start;
   font-family: monospace;
   margin: 30px 0;
   padding: 10px;
 }
 .statistic p {
   font-size: 24px;
-  width: 50%;
   padding: 0 10px;
   border-left: 2px solid #fff;
 }
@@ -375,6 +391,7 @@ fieldset {
   width: 100%;
   background-color: #5db75f;
   padding: 5px;
+  margin: 5px 0;
   border-radius: 5px;
 }
 img.scooter {
@@ -489,6 +506,7 @@ button.dlt.book,
   background: linear-gradient(#45464cda, #a9baa0b1),
     url('./img/ColtReg.jpeg') center/cover no-repeat;
   width: 80%;
+  height: 40%;
   padding: 20px;
   align-items: end;
   border: 2px solid #202122;
@@ -576,7 +594,7 @@ button.put.reg {
 
 /* COMMENT */
 .comment {
-  width: 90%;
+  width: 95%;
   border: 2px solid #8a858571;
   border-radius: 5px;
   padding: 10px;
@@ -682,6 +700,13 @@ h1 b {
   .flex-container.group li,
   .flex-container.group h2 {
     font-size: 50%;
+  }
+  .modal .right-side.form form {
+    font-size: 80%;
+  }
+  div.btns-modal {
+    display: flex;
+    justify-content: center;
   }
 }
 

@@ -35,26 +35,26 @@ function Kolt({ kolt }) {
               marginTop: '-5px',
             }}
           ></span>
-          <div
-            style={{
-              width: '16%',
-              color: kolt.koltColor === 'white' ? 'black' : 'white',
-            }}
-          >
-            {kolt.img ? (
+          {kolt.koltImg ? (
+            <div
+              style={{
+                display: 'flex',
+                width: '16%',
+                maxHeight: '120px',
+              }}
+            >
               <img
-                style={{ width: '100%', borderRadius: '5px' }}
-                src={require(`../../../img/${kolt.koltColor}.png`)}
-                alt='scoter_image'
-              />
-            ) : (
-              <img
-                style={{ width: '100%', borderRadius: '5px' }}
-                src={require('../../../img/Envy-Colt2.png')}
+                style={{
+                  objectFit: 'contain',
+                  width: '100%',
+                  height: 'auto',
+                  borderRadius: '5px',
+                }}
+                src={kolt.koltImg}
                 alt='scooters'
               />
-            )}
-          </div>
+            </div>
+          ) : null}
           <p>{kolt.regCode}</p>
           {kolt.isBusy === 1 ? (
             <p className='isAvailable'>available</p>
@@ -62,8 +62,11 @@ function Kolt({ kolt }) {
             <p className='isBusy'>busy</p>
           )}
           <p>
-            {new Date(kolt.lastUsed).toISOString().slice(0, 10)}{' '}
-            {new Date(kolt.lastUsed).toLocaleTimeString()}
+            {JSON.stringify(new Date(kolt.lastUsed))
+              .slice(1, -6)
+              .replace('T', ' ')}
+            {/* {new Date(kolt.lastUsed).toISOString().slice(0, 10)}{' '}
+            {new Date(kolt.lastUsed).toLocaleTimeString()} */}
           </p>
           <p>{Number(kolt.totalRide).toFixed(2)} km.</p>
           <div className='btns'>

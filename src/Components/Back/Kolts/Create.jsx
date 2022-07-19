@@ -1,14 +1,26 @@
+import { useRef } from 'react';
 import { useContext, useState } from 'react';
 import rand from '../../../Functions/randNumbers';
 import BackContext from '../BackContext';
+import getBase64 from '../../../Functions/getBase64';
 
 function Create() {
-  const { setCreateData, koltColors, color, setColor } =
+  const { setCreateData, koltColors, color, setColor, showMessage } =
     useContext(BackContext);
   console.log('koltColors_create', koltColors);
   const [regCode, setRegCode] = useState('KO' + rand(100000, 999999));
 
   // const [color, setColor] = useState('0');
+  const fileInput = useRef();
+  const [image, setImage] = useState(null);
+
+  const showImage = () => {
+    getBase64(fileInput.current.files[0])
+      .then((photo) => setImage(photo))
+      .catch((_) => {
+        showMessage({ text: 'failo pasirinkimas atsauktas!', type: 'danger' });
+      });
+  };
 
   const [isBusy, setIsBusy] = useState(1);
   const [lastUsed, setLastUsed] = useState('');
@@ -31,6 +43,7 @@ function Create() {
       lastUsed,
       totalRide,
       color: parseInt(color),
+      photo: image,
     };
     setCreateData(data);
     setRegCode('');
@@ -39,13 +52,15 @@ function Create() {
     setDivColor();
     setLastUsed('');
     setTotalRide('');
+    setImage(null);
+    fileInput.current.value = null;
   };
   console.log('color', color);
   return (
     <>
       <div className='form-container'>
         <div className='img'></div>
-        <div className='form'>
+        <div className='form create'>
           <h3>Enter scooter details</h3>
           <form>
             <select className='isAvailable' value={isBusy}>
@@ -94,11 +109,33 @@ function Create() {
               value={totalRide}
               placeholder='... km.'
             />
-            <button type='button' className='put' onClick={handleCreate}>
-              <svg className='put'>
-                <use href='#Add' />
-              </svg>
-            </button>
+            <div>
+              <label>Photo</label>
+              <input ref={fileInput} type='file' onChange={showImage} />
+              <small style={{ fontSize: '12px', float: 'left' }}>
+                Upload Photo.
+              </small>
+            </div>
+            {image ? (
+              <div
+                style={{
+                  width: '90%',
+                }}
+              >
+                <img
+                  style={{ width: '100%', height: 'auto', borderRadius: '5px' }}
+                  src={image}
+                  alt='scooter'
+                />
+              </div>
+            ) : null}
+            <div className='btns add'>
+              <button type='button' className='put' onClick={handleCreate}>
+                <svg className='put'>
+                  <use href='#Add' />
+                </svg>
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -4,7 +4,9 @@ const port = 3003;
 
 const cors = require("cors");
 app.use(cors());
+app.use(express.json({ limit: '10mb' }));
 const mysql = require("mysql");
+
 const md5 = require('js-md5');
 const uuid = require('uuid');
 app.use(
@@ -13,7 +15,6 @@ app.use(
   })
 );
 app.use(express.json());
-
 const con = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -128,7 +129,7 @@ app.get('/paspirtukai', (req, res) => {
   if (!req.query['color-id'] && !req.query['s']) {
     sql = `
   SELECT
-  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS com
+  k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS com, k.photo AS koltImg
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -142,7 +143,7 @@ app.get('/paspirtukai', (req, res) => {
   } else if (req.query['color-id']) {
     sql = `
   SELECT
-  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms
+  k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms, k.photo AS koltImg
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -159,7 +160,7 @@ app.get('/paspirtukai', (req, res) => {
   } else {
     sql = `
     SELECT
-    k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms
+    k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms, k.photo AS koltImg
     FROM kolts AS k
     LEFT JOIN kolts_color AS c
     ON k.color_id = c.id
@@ -184,7 +185,7 @@ app.get('/paspirtukai', (req, res) => {
 app.get('/spalvos', (req, res) => {
   const sql = `
   SELECT
-  c.title, c.id, c.imgPath, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready
+  c.title, c.id, c.photo, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready
   FROM kolts AS k
   RIGHT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -201,10 +202,10 @@ app.get('/spalvos', (req, res) => {
 app.post('/paspirtukai', (req, res) => {
   const sql = `
   INSERT INTO kolts
-  (regCode, isBusy, lastUsed, totalRide, color_id)
-  VALUES (?, ?, ?, ?, ?)
+  (regCode, isBusy, lastUsed, totalRide, color_id, photo)
+  VALUES (?, ?, ?, ?, ?, ?)
   `;
-  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed ? req.body.lastUsed : '', req.body.totalRide ? req.body.totalRide : 0, req.body.color === '0' ? null : req.body.color], (err, result) => {
+  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed ? req.body.lastUsed : '', req.body.totalRide ? req.body.totalRide : 0, req.body.color === '0' ? null : req.body.color, req.body.photo], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Naujas Kolt sekmingai sukurtas', type: 'success' } });
   })
@@ -235,6 +236,19 @@ app.delete('/paspirtukai/:id', (req, res) => {
   })
 });
 
+// DELETE KOLT Photo
+app.delete('/nuotrauka/:id', (req, res) => {
+  const sql = `
+  UPDATE kolts
+  SET photo = null
+  WHERE id = ?
+  `;
+  con.query(sql, [req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Nuotrauka sekimingai istrinta', type: 'info' } });
+  })
+});
+
 // DELETE KOLTs COLOR
 app.delete('/spalvos/:colorId', (req, res) => {
   const sql = `
@@ -251,10 +265,10 @@ app.delete('/spalvos/:colorId', (req, res) => {
 app.put('/paspirtukai/:id', (req, res) => {
   const sql = `
   UPDATE kolts 
-  SET regCode = ?, isBusy = ?, lastUsed = ?, totalRide = ?, color_id = ?
+  SET regCode = ?, isBusy = ?, lastUsed = ?, totalRide = ?, color_id = ?, photo = ?
   where id = ?
   `;
-  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed, req.body.totalRide, req.body.color === '0' ? null : req.body.color, req.params.id], (err, result) => {
+  con.query(sql, [req.body.regCode, req.body.isBusy, req.body.lastUsed, req.body.totalRide, req.body.color === '0' ? null : req.body.color, req.body.photo, req.params.id], (err, result) => {
     if (err) throw err;
     res.send({ result, msg: { text: 'Kolt duomenys sekmingai atnaujinti', type: 'info' } });
   });
@@ -262,9 +276,12 @@ app.put('/paspirtukai/:id', (req, res) => {
 
 // READ FRONT KOLTS
 app.get('/front/paspirtukai', (req, res) => {
-  const sql = `
+  let sql;
+  let requests;
+  if (!req.query['color-id'] && !req.query['s']) {
+    sql = `
   SELECT
-  k.id, c.title AS koltColor, c.imgPath AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com
+  k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com, k.photo AS koltImg
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -272,7 +289,37 @@ app.get('/front/paspirtukai', (req, res) => {
   ON k.id = cm.kolt_id
   GROUP BY k.id
   `;
-  con.query(sql, (err, result) => {
+    requests = [];
+  } else if (req.query['color-id']) {
+    sql = `
+    SELECT
+    k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com, k.photo AS koltImg
+    FROM kolts AS k
+    LEFT JOIN kolts_color AS c
+    ON k.color_id = c.id
+    LEFT JOIN comments AS cm
+    ON k.id = cm.kolt_id
+
+    WHERE k.color_id = ?
+    GROUP BY k.id
+    `;
+    requests = [req.query['color-id']];
+  } else {
+    sql = `
+    SELECT
+    k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com, k.photo AS koltImg
+    FROM kolts AS k
+    LEFT JOIN kolts_color AS c
+    ON k.color_id = c.id
+    LEFT JOIN comments AS cm
+    ON k.id = cm.kolt_id
+
+    WHERE regCode LIKE ?
+    GROUP BY k.id
+    `;
+    requests = ['%' + req.query['s'] + '%'];
+  }
+  con.query(sql, requests, (err, result) => {
     if (err) throw err;
     res.send(result);
   });
@@ -282,7 +329,7 @@ app.get('/front/paspirtukai', (req, res) => {
 app.get('/front/spalvos', (req, res) => {
   const sql = `
   SELECT
-  c.title, c.id, c.imgPath, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides
+  c.title, c.id, c.photo, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides
   FROM kolts AS k
   RIGHT JOIN kolts_color AS c
   ON k.color_id = c.id
