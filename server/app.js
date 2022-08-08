@@ -118,10 +118,6 @@ app.post("/login", (req, res) => {
   });
 });
 
-// app.get('/', (req, res) => {
-//   res.send('Welcome to our world!')
-// });
-
 // READ KOLTS
 app.get('/paspirtukai', (req, res) => {
   let sql;

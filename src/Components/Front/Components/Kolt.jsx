@@ -121,9 +121,8 @@ function Kolt({ kolt }) {
                 lineHeight: '70px',
                 backgroundColor: kolt.koltColor,
                 color: kolt.koltColor === 'white' ? 'black' : 'white',
-                boxShadow: `2px 3px 20px ${
-                  kolt.koltColor ? kolt.koltColor : '#999'
-                } `,
+                boxShadow: `2px 3px 20px ${kolt.koltColor ? kolt.koltColor : '#999'
+                  } `,
               }}
             >
               {kolt.koltColor ? kolt.koltColor : 'random'}

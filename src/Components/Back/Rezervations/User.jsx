@@ -51,9 +51,9 @@ function User({ user }) {
               type='button'
               className='edt book'
               onClick={handleModal}
-              style={{ fontSize: '12px', width: '65px', height: '65px' }}
+              style={{ fontSize: '14px', width: '65px', height: '65px' }}
             >
-              MAKE CHAN-GES
+              CON-FIRM
             </button>
             <button
               type='button'
