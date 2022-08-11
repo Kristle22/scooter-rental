@@ -37,6 +37,10 @@ function Back({ show }) {
   const [color, setColor] = useState(null);
 
   const [deletePhoto, setDeletePhoto] = useState(null);
+  const [status, setStatus] = useState(0);
+  const [archive, setArchive] = useState(0);
+
+  const [comments, setComments] = useState(null);
 
   const sort = (e) => {
     const sortOrder = e.target.value;
@@ -52,7 +56,7 @@ function Back({ show }) {
     setMessage(mes);
     setTimeout(() => setMessage(null), 5000);
   };
-  // /////////////KOLTS//////////////
+  // ///////////KOLTS//////////
   // Read
   useEffect(() => {
     let query;
@@ -75,7 +79,7 @@ function Back({ show }) {
       });
   }, [lastUpdate, filterColor, search]);
 
-  // console.log('kolts', kolts);
+  console.log('kolts', kolts);
 
   // Create
   useEffect(() => {
@@ -130,7 +134,53 @@ function Back({ show }) {
       });
   }, [editData]);
 
-  // /////////////KOLT COLOR/////////////
+  // Read rental info
+  useEffect(() => {
+    let query;
+    if (!search) {
+      query = '';
+    } else {
+      query = '?s=' + search;
+    }
+    axios
+      .get('http://localhost:3003/rezervacijos' + query, authConfig())
+      .then((res) => {
+        console.log('USERS', res.data);
+        setUsers(res.data);
+      });
+  }, [lastUpdate, search]);
+
+  // Edit STATUS
+  useEffect(() => {
+    if (null === status) return;
+    axios
+      .put(
+        'http://localhost:3003/statusas/' + status.id,
+        status,
+        authConfig()
+      )
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
+  }, [status]);
+
+  // Edit archive
+  useEffect(() => {
+    if (null === archive) return;
+    axios
+      .put(
+        'http://localhost:3003/archyvas/' + archive.id,
+        archive,
+        authConfig()
+      )
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
+  }, [archive]);
+
+  // ////////KOLT COLOR////////
   // READ
   useEffect(() => {
     axios.get('http://localhost:3003/spalvos', authConfig()).then((res) => {
@@ -163,6 +213,14 @@ function Back({ show }) {
       });
   }, [deleteKoltColors]);
 
+  // READ COMMENTS///////////////
+  useEffect(() => {
+    axios.get('http://localhost:3003/komentarai', authConfig()).then((res) => {
+      setComments(res.data);
+    });
+  }, [lastUpdate]);
+  console.log(comments);
+
   // DELETE COMMENT
   const handleDeleteComment = (id) => {
     axios
@@ -172,22 +230,6 @@ function Back({ show }) {
         setLastUpdate(Date.now());
       });
   };
-
-  // Read FRONT rental info
-  useEffect(() => {
-    let query;
-    if (!search) {
-      query = '';
-    } else {
-      query = '?s=' + search;
-    }
-    axios
-      .get('http://localhost:3003/rezervacijos' + query, authConfig())
-      .then((res) => {
-        console.log('USERS', res.data);
-        setUsers(res.data);
-      });
-  }, [lastUpdate, search]);
 
   return (
     <BackContext.Provider
@@ -213,13 +255,25 @@ function Back({ show }) {
         handleDeleteComment,
         users,
         setDeletePhoto,
+        setStatus,
+        setArchive,
+        comments,
       }}
     >
       {show === 'admin' ? (
         <>
-          <div className='container'>
-            <Nav />
-            <h2>BACK_OFFICE</h2>
+          <Nav />
+          <div className='admin'>
+            <div className='center'>
+              <img
+                src={require('../../img/admin-1.png')}
+                alt='admin panel'
+                style={{
+                  maxWidth: '350px',
+                  opacity: '0.5'
+                }}
+              />
+            </div>
           </div>
         </>
       ) : show === 'colors' ? (

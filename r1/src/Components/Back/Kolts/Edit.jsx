@@ -11,6 +11,7 @@ function Edit() {
     koltColors,
     showMessage,
     setDeletePhoto,
+    users,
   } = useContext(BackContext);
 
   const [isBusy, setIsBusy] = useState(1);
@@ -48,7 +49,7 @@ function Edit() {
 
   const handleDeletePhoto = () => {
     setDeletePhoto({ id: modalData.id });
-    setModalData((p) => ({ ...p, koltImg: null }));
+    setModalData((p) => ({ ...p, photo: null }));
   };
 
   useEffect(() => {
@@ -64,7 +65,7 @@ function Edit() {
     setLastUsed(modalData.lastUsed);
     setTotalRide(modalData.totalRide);
     setTotalRide('');
-    setImage(modalData.koltImg);
+    setImage(modalData.photo);
   }, [modalData, koltColors]);
   console.log('modalData', modalData);
 
@@ -86,6 +87,12 @@ function Edit() {
     return null;
   }
 
+  const userLen = users.filter(u => u.kolt_id === modalData.id).length;
+
+  const lastUser = users.filter(u => u.kolt_id === modalData.id)[userLen - 1];
+
+  console.log(lastUser);
+
   return (
     <>
       <div className='modal-layer'>
@@ -98,21 +105,22 @@ function Edit() {
                   <b>pick-up:</b>{' '}
                   <i>
                     {modalData.startDate &&
-                      new Date(modalData.startDate).toLocaleString()}
+                      new Date(lastUser.pick_up_date).toLocaleString()
+                    }
                   </i>
                 </p>
                 <p>
                   <b>return:</b>{' '}
                   <i>
                     {modalData.finishDate &&
-                      new Date(modalData.finishDate).toLocaleString()}
+                      new Date(lastUser.return_date).toLocaleString()}
                   </i>
                 </p>
                 <p>
-                  <b>name:</b> <i>{modalData.userName}</i>
+                  <b>name:</b> <i>{modalData.userName && lastUser.name}</i>
                 </p>
                 <p>
-                  <b>email:</b> <i>{modalData.userEmail}</i>
+                  <b>email:</b> <i>{modalData.userEmail && lastUser.email}</i>
                 </p>
               </div>
               <i
@@ -125,7 +133,7 @@ function Edit() {
               >
                 comment:
               </i>
-              <div className='user-com'>{modalData.userCom}</div>
+              <div className='user-com'>{modalData.userCom && lastUser.com}</div>
               <button
                 type='button'
                 className='close-x'
@@ -198,18 +206,18 @@ function Edit() {
                   <option value='0'>Choose color</option>
                   {koltColors
                     ? koltColors.map((c) => (
-                        <>
-                          <option
-                            key={c.id}
-                            value={c.id}
-                            style={{
-                              backgroundColor: c.title,
-                            }}
-                          >
-                            {c.title}
-                          </option>
-                        </>
-                      ))
+                      <>
+                        <option
+                          key={c.id}
+                          value={c.id}
+                          style={{
+                            backgroundColor: c.title,
+                          }}
+                        >
+                          {c.title}
+                        </option>
+                      </>
+                    ))
                     : null}
                 </select>
                 <div

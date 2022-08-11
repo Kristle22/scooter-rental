@@ -6,8 +6,8 @@ import Filter from './Filter';
 import Search from './Search';
 
 function KoltList() {
-  const { kolts } = useContext(FrontContext);
-
+  const { kolts, users } = useContext(FrontContext);
+  console.log(users);
   return (
     <>
       <div>
@@ -37,9 +37,9 @@ function KoltList() {
             <Filter />
           </div>
           <div className='flex-row'>{/* <SortBtns /> */}</div>
-          {kolts.map((klt) => (
-            <Kolt key={klt.id} kolt={klt} />
-          ))}
+          {kolts.map((klt) => klt.isBusy === 1 || klt.status === 1 ?
+            <Kolt key={klt.id} kolt={klt} /> : null
+          )}
         </div>
       </div>
     </>

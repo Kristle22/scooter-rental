@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import Kolt from './Kolt';
+import Com from './Com';
 import BackContext from '../BackContext';
 
 function List() {
-  const { kolts } = useContext(BackContext);
+  const { comments } = useContext(BackContext);
 
   return (
     <>
@@ -16,7 +16,7 @@ function List() {
           <h4>Reg. Code</h4>
           <option value=''></option>
         </div>
-        {kolts ? kolts.map((klt) => <Kolt key={klt.id} kolt={klt} />) : null}
+        {comments ? comments.map((com) => <Com key={com.id} row={com} />) : null}
       </div>
     </>
   );

@@ -4,6 +4,7 @@ import BookCreate from './BookCreate';
 import DistanceRecord from './DistanceRecord';
 
 function Kolt({ kolt }) {
+
   const {
     setBookModal,
     setDistanceModal,
@@ -11,31 +12,37 @@ function Kolt({ kolt }) {
     setCreateRates,
     users,
   } = useContext(FrontContext);
-
+  console.log(kolt);
   const [comment, setComment] = useState('');
   const [rate, setRate] = useState('5');
 
   const handleModal = () => {
     setBookModal({
       id: kolt.id,
-      koltColor: kolt.koltColor,
       regCode: kolt.regCode,
-      isBusy: kolt.isBusy,
+      koltColor: kolt.koltColor,
+      photo: kolt.photo,
+      isBusy: 0,
+      totalRide: kolt.totalRide,
     });
   };
 
   const handleDistance = () => {
-    const userId = users.filter((u) => u.kolt_id === kolt.id)[0].id;
+    const userLen = users.filter(u => u.kolt_id === kolt.id).length;
 
-    const returnPrimary = users.filter((u) => u.kolt_id === kolt.id)[0]
-      .return_date;
+    const userId = users.filter((u) => u.kolt_id === kolt.id)[userLen - 1].id;
+
+    const returnPrimary = users.filter((u) => u.kolt_id === kolt.id)[userLen - 1].return_date;
+
     setDistanceModal({
       userId: userId,
       returnDate: returnPrimary,
       id: kolt.id,
       koltColor: kolt.koltColor,
       regCode: kolt.regCode,
+      photo: kolt.photo,
       isBusy: kolt.isBusy,
+      totalRide: kolt.totalRide,
     });
   };
 
@@ -88,7 +95,7 @@ function Kolt({ kolt }) {
           >
             {kolt.regCode}
           </p>
-          {kolt.koltImg ? (
+          {kolt.photo ? (
             <img
               style={{
                 width: '16%',
@@ -96,7 +103,7 @@ function Kolt({ kolt }) {
                 objectFit: 'contain',
                 borderRadius: '5px',
               }}
-              src={kolt.koltImg}
+              src={kolt.photo}
               alt='scooter_image'
             />
           ) : (

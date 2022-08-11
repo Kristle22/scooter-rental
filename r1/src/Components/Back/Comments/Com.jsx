@@ -1,8 +1,10 @@
 import { useContext } from 'react';
 import BackContext from '../BackContext';
 
-function Kolt({ kolt }) {
-  const { handleDeleteComment } = useContext(BackContext);
+function Com({ row }) {
+  const { handleDeleteComment, koltColors } = useContext(BackContext);
+
+  const koltColor = koltColors.filter(col => col.id === row.color_id)[0].title;
 
   return (
     <>
@@ -12,12 +14,12 @@ function Kolt({ kolt }) {
             style={{
               position: 'relative',
               width: '16%',
-              color: kolt.koltColor === 'white' ? 'black' : 'white',
+              color: row.koltColor === 'white' ? 'black' : 'white',
             }}
           >
             <span
               style={{
-                backgroundColor: kolt.koltColor ? kolt.koltColor : null,
+                backgroundColor: koltColor ? koltColor : null,
                 padding: '3px 10px',
                 borderRadius: '50%',
                 width: '20px',
@@ -35,8 +37,8 @@ function Kolt({ kolt }) {
                 borderRadius: '5px',
               }}
               src={
-                kolt.koltImg
-                  ? kolt.koltImg
+                row.photo
+                  ? row.photo
                   : require('../../../img/Envy-Colt2.png')
               }
               alt='scoter_image'
@@ -45,13 +47,13 @@ function Kolt({ kolt }) {
           <h2
             style={{ margin: '20px', fontFamily: 'cursive', fontSize: '30px' }}
           >
-            {kolt.regCode}
+            {row.regCode}
           </h2>
         </div>
-        <h2 style={{ flexDirection: 'row' }}>Comments({kolt.com_count})</h2>
+        <h2 style={{ flexDirection: 'row' }}>Comments({row.com_count})</h2>
         <ul>
-          {kolt.coms &&
-            kolt.coms
+          {row.coms &&
+            row.coms
               .slice(0, -5)
               .split('-^-^-,')
               .map((c, i) => (
@@ -61,7 +63,7 @@ function Kolt({ kolt }) {
                     type='button'
                     className='dlt'
                     onClick={() =>
-                      handleDeleteComment(kolt.coms_id.split(',')[i])
+                      handleDeleteComment(row.coms_id.split(',')[i])
                     }
                   >
                     <svg>
@@ -76,4 +78,4 @@ function Kolt({ kolt }) {
   );
 }
 
-export default Kolt;
+export default Com;

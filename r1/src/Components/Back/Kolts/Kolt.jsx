@@ -35,7 +35,7 @@ function Kolt({ kolt }) {
               marginTop: '-5px',
             }}
           ></span>
-          {kolt.koltImg ? (
+          {kolt.photo ? (
             <div
               style={{
                 display: 'flex',
@@ -50,7 +50,7 @@ function Kolt({ kolt }) {
                   height: 'auto',
                   borderRadius: '5px',
                 }}
-                src={kolt.koltImg}
+                src={kolt.photo}
                 alt='scooters'
               />
             </div>

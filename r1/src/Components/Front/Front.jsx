@@ -33,6 +33,8 @@ function Front() {
 
   const [users, setUsers] = useState(null);
 
+  const [status, setStatus] = useState(0);
+
   const [filterColor, setFilterColor] = useState(0);
   const [search, setSearch] = useState('');
 
@@ -116,7 +118,7 @@ function Front() {
     console.log('EDIT DATA', editData);
     axios
       .put(
-        'http://localhost:/paspirtukai/' + editData.id,
+        'http://localhost:3003/paspirtukai/' + editData.id,
         editData,
         authConfig()
       )
@@ -142,7 +144,7 @@ function Front() {
     console.log('BOOKCREATE', bookCreate);
     axios
       .post(
-        'http://localhost:3003/front/rezervacijos',
+        'http://localhost:3003/rezervacijos',
         bookCreate,
         authConfig()
       )
@@ -199,6 +201,21 @@ function Front() {
       });
   }, [createDistance]);
 
+  // Edit STATUS
+  useEffect(() => {
+    if (null === status) return;
+    axios
+      .put(
+        'http://localhost:3003/front/statusas/' + status.id,
+        status,
+        authConfig()
+      )
+      .then((res) => {
+        showMessage(res.data.msg);
+        setLastUpdate(Date.now());
+      });
+  }, [status]);
+
   return (
     <FrontContext.Provider
       value={{
@@ -210,8 +227,8 @@ function Front() {
         setBookCreate,
         bookModal,
         setBookModal,
-        setCreateDistance,
         distanceModal,
+        setCreateDistance,
         setDistanceModal,
         setEditData,
         selectDate,
@@ -224,6 +241,7 @@ function Front() {
         showMessage,
         setFilterColor,
         setSearch,
+        setStatus,
       }}
     >
       <Crud />

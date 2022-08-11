@@ -17,10 +17,10 @@ function Color({ color }) {
           flexWrap: 'nowrap',
         }}
       >
-        {color.photo ? (
+        {color.koltImg ? (
           <img
             style={{ width: '16%', borderRadius: '5px' }}
-            src={require(`../../../img/${color.title}.png`)}
+            src={color.koltImg}
             alt='scooter_image'
           />
         ) : (

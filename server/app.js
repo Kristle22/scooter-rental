@@ -134,12 +134,14 @@ app.get('/paspirtukai', (req, res) => {
   if (!req.query['color-id'] && !req.query['s']) {
     sql = `
   SELECT
-  k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS com, k.photo AS koltImg
+  k.id, c.title AS koltColor, regCode, isBusy, status, lastUsed, totalRide, k.photo, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS com
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
+
   LEFT JOIN comments AS cm
   ON k.id = cm.kolt_id
+
   LEFT JOIN rental_info AS r
   ON k.id = r.kolt_id
   GROUP BY k.id
@@ -148,13 +150,15 @@ app.get('/paspirtukai', (req, res) => {
   } else if (req.query['color-id']) {
     sql = `
   SELECT
-  k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms, k.photo AS koltImg
+  k.id, c.title AS koltColor, regCode, isBusy, status, lastUsed, totalRide, k.photo, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms
+
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
 
   LEFT JOIN comments AS cm
   ON k.id = cm.kolt_id
+
   LEFT JOIN rental_info AS r
   ON k.id = r.kolt_id
 
@@ -165,7 +169,7 @@ app.get('/paspirtukai', (req, res) => {
   } else {
     sql = `
     SELECT
-    k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms, k.photo AS koltImg
+    k.id, c.title AS koltColor, regCode, isBusy, status, lastUsed, totalRide, k.photo, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, GROUP_CONCAT(cm.id) AS coms_id, r.pick_up_date AS startDate, r.return_date AS finishDate, r.name AS userName, r.email AS userEmail, r.com AS userCom, cm.id AS com_id, comment AS coms
     FROM kolts AS k
     LEFT JOIN kolts_color AS c
     ON k.color_id = c.id
@@ -190,7 +194,7 @@ app.get('/paspirtukai', (req, res) => {
 app.get('/spalvos', (req, res) => {
   const sql = `
   SELECT
-  c.title, c.id, c.photo, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready
+  c.title, c.id, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, k.photo AS koltImg
   FROM kolts AS k
   RIGHT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -286,24 +290,28 @@ app.get('/front/paspirtukai', (req, res) => {
   if (!req.query['color-id'] && !req.query['s']) {
     sql = `
   SELECT
-  k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com, k.photo AS koltImg
+  k.id, c.title AS koltColor, regCode, isBusy, status, lastUsed, totalRide, k.photo, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com
   FROM kolts AS k
   LEFT JOIN kolts_color AS c
   ON k.color_id = c.id
   LEFT JOIN comments AS cm
   ON k.id = cm.kolt_id
+  LEFT JOIN rental_info AS r
+  ON k.id = r.kolt_id
   GROUP BY k.id
   `;
     requests = [];
   } else if (req.query['color-id']) {
     sql = `
     SELECT
-    k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com, k.photo AS koltImg
+    k.id, c.title AS koltColor, regCode, isBusy, status, lastUsed, totalRide, k.photo, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com
     FROM kolts AS k
     LEFT JOIN kolts_color AS c
     ON k.color_id = c.id
     LEFT JOIN comments AS cm
     ON k.id = cm.kolt_id
+    LEFT JOIN rental_info AS r
+    ON k.id = r.kolt_id
 
     WHERE k.color_id = ?
     GROUP BY k.id
@@ -312,12 +320,14 @@ app.get('/front/paspirtukai', (req, res) => {
   } else {
     sql = `
     SELECT
-    k.id, c.title AS koltColor, c.photo AS img, regCode, isBusy, lastUsed, totalRide, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com, k.photo AS koltImg
+    k.id, c.title AS koltColor, regCode, isBusy, status, lastUsed, totalRide, k.photo, color_id, GROUP_CONCAT(k.id) AS koltIds, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(cm.comment, '-^-^-') AS coms, COUNT(cm.comment) AS com_count, k.rates, k.rate_sum, cm.id AS com_id, cm.comment AS com
     FROM kolts AS k
     LEFT JOIN kolts_color AS c
     ON k.color_id = c.id
     LEFT JOIN comments AS cm
     ON k.id = cm.kolt_id
+    LEFT JOIN rental_info AS r
+    ON k.id = r.kolt_id
 
     WHERE regCode LIKE ?
     GROUP BY k.id
@@ -334,7 +344,7 @@ app.get('/front/paspirtukai', (req, res) => {
 app.get('/front/spalvos', (req, res) => {
   const sql = `
   SELECT
-  c.title, c.id, c.photo, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides
+  c.title, c.id, COUNT(k.id) AS kolts_count, SUM(k.isBusy = 0) AS busy, SUM(k.isBusy = 1) AS ready, GROUP_CONCAT(k.regCode) AS regCodes, GROUP_CONCAT(k.isBusy) AS statuses, GROUP_CONCAT(k.lastUsed) AS lastUses, GROUP_CONCAT(k.totalRide) AS totalRides
   FROM kolts AS k
   RIGHT JOIN kolts_color AS c
   ON k.color_id = c.id
@@ -354,7 +364,7 @@ app.get('/rezervacijos', (req, res) => {
   if (!req.query['s']) {
     sql = `
   SELECT
-  r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code, distance
+  r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code, distance, archive
   FROM rental_info AS r
   LEFT JOIN kolts AS k
   ON r.kolt_id = k.id
@@ -363,7 +373,7 @@ app.get('/rezervacijos', (req, res) => {
   } else {
     sql = `
     SELECT
-    r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code, distance
+    r.id, pick_up_date, return_date, name, email, com, kolt_id, k.regCode AS kolt_code, distance, archive
     FROM rental_info AS r
     LEFT JOIN kolts AS k
     ON r.kolt_id = k.id
@@ -378,7 +388,7 @@ app.get('/rezervacijos', (req, res) => {
 });
 
 // CREATE FRONT Rental Info
-app.post('/front/rezervacijos', (req, res) => {
+app.post('/rezervacijos', (req, res) => {
   const sql = `
   INSERT INTO rental_info
       (pick_up_date, return_date, name, email, com, kolt_id)
@@ -402,6 +412,23 @@ app.post('/front/komentarai', (req, res) => {
     res.send({ result, msg: { text: 'Jusu komentaras issiustas. Dekojame uz atsiliepima!.', type: 'success' } });
   })
 });
+
+// READ BACK COMMENTS
+app.get('/komentarai', (req, res) => {
+  const sql = `
+  SELECT
+  GROUP_CONCAT(cm.id) AS coms_id, GROUP_CONCAT(comment, '-^-^-') AS coms, COUNT(comment) AS com_count, kolt_id, regCode, photo, color_id 
+  FROM comments AS cm
+  LEFT JOIN kolts AS k
+  ON cm.kolt_id = k.id
+  GROUP BY k.id
+  `;
+  con.query(sql, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
 
 // DELETE Comments
 app.delete('/komentarai/:comId', (req, res) => {
@@ -428,12 +455,52 @@ app.put('/front/reitingai/:id', (req, res) => {
   });
 });
 
+// Update STATUS Back
+app.put('/statusas/:id', (req, res) => {
+  const sql = `
+  UPDATE kolts 
+  SET status = 1
+  WHERE id = ?
+        `;
+  con.query(sql, [req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Rezervacija patvirtinta!', type: 'info' } });
+  });
+});
+
+// Update STATUS Front
+app.put('/front/statusas/:id', (req, res) => {
+  const sql = `
+  UPDATE kolts 
+  SET status = 0
+  WHERE id = ?
+        `;
+  con.query(sql, [req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'Rezervacija patvirtinta!', type: 'info' } });
+  });
+});
+
+// Update ARCHIVE
+app.put('/archyvas/:id', (req, res) => {
+  const sql = `
+  UPDATE rental_info 
+  SET archive = 1
+  WHERE id = ?
+        `;
+  con.query(sql, [req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send({ result, msg: { text: 'irasas idetas i archyva!', type: 'info' } });
+  });
+});
+
+
 // EDIT FRONT rental-info distance
 app.put('/front/atstumas/:userId', (req, res) => {
   const sql = `
   UPDATE rental_info 
   SET distance = ?, return_date = ?
-      where id = ?
+      WHERE id = ?
         `;
   con.query(sql, [req.body.distance, req.body.returnDate, req.params.userId], (err, result) => {
     if (err) throw err;

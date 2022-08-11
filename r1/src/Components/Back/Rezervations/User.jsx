@@ -1,15 +1,8 @@
-import { useContext } from 'react';
-import BackContext from '../BackContext';
-function User({ user }) {
-  const { setModalRezervation, setDeleteRezervation } = useContext(BackContext);
+import StatusBtns from './StatusBtns';
 
-  const handleModal = () => {
-    setModalRezervation(user);
-  };
-  const handleDelete = () => {
-    setDeleteRezervation(user);
-  };
-  // console.log('USER', user);
+function User({ user }) {
+
+  console.log('USER', user);
   return (
     <>
       <div
@@ -45,26 +38,7 @@ function User({ user }) {
         >
           {user.distance.toFixed(2)}
         </p>
-        <div className='btns book'>
-          <div className='btns' style={{ flexDirection: 'column' }}>
-            <button
-              type='button'
-              className='edt book'
-              onClick={handleModal}
-              style={{ fontSize: '14px', width: '65px', height: '65px' }}
-            >
-              CON-FIRM
-            </button>
-            <button
-              type='button'
-              className='dlt book'
-              onClick={handleDelete}
-              style={{ fontSize: '14px', width: '65px', height: '65px' }}
-            >
-              REM-OVE
-            </button>
-          </div>
-        </div>
+        <StatusBtns row={user} />
       </div>
     </>
   );

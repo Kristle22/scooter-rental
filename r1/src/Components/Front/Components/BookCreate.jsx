@@ -33,7 +33,7 @@ function BookCreate({ kolt }) {
     setComments('');
   }, [bookModal, setColor, koltColors]);
 
-  // console.log('DATA', bookModal);
+  console.log('DATA', bookModal);
 
   const handleReserve = () => {
     if (pickUpDate === 0 || name === '' || email === '') {
@@ -46,9 +46,11 @@ function BookCreate({ kolt }) {
     const data = {
       id: bookModal.id,
       regCode: bookModal.regCode,
+      totalRide: bookModal.totalRide,
       koltColor: bookModal.koltColor,
+      photo: bookModal.photo,
       color,
-      isBusy: 0,
+      isBusy: bookModal.isBusy,
       pickUpDate,
       returnDate,
       name,

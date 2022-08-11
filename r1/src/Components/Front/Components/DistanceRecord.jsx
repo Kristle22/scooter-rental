@@ -11,6 +11,7 @@ function DistanceRecord({ kolt }) {
     setColor,
     koltColors,
     showMessage,
+    setStatus,
   } = useContext(FrontContext);
 
   const [returnDate, setReturnDate] = useState(0);
@@ -22,13 +23,13 @@ function DistanceRecord({ kolt }) {
     }
     setColor(
       koltColors.filter((c) => distanceModal.koltColor === c.title)[0]?.id ??
-        null
+      null
     );
     setDistance('');
     setReturnDate('');
   }, [distanceModal, color, setColor, koltColors]);
 
-  // console.log('DATA', distanceModal);
+  console.log('DATA', distanceModal);
   const handleRecord = () => {
     if (distance === '') {
       showMessage({
@@ -42,15 +43,18 @@ function DistanceRecord({ kolt }) {
       id: distanceModal.id,
       regCode: distanceModal.regCode,
       koltColor: distanceModal.koltColor,
+      photo: distanceModal.photo,
       isBusy: 1,
       color,
       distance: Number(distance),
+      totalRide: distanceModal.totalRide + Number(distance),
       returnDate: returnDate ? returnDate : distanceModal.returnDate,
     };
     setEditData(data);
     console.log(data);
     setCreateDistance(data);
     setDistanceModal(null);
+    setStatus({ id: distanceModal.id })
   };
   if (null === distanceModal) {
     return null;

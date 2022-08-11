@@ -22,7 +22,7 @@ function UserList() {
           <h4>Comment</h4>
           <h4>Distance (km.)</h4>
         </div>
-        {users && users.map((u) => <User key={u.id} user={u} />)}
+        {users && users.map((u) => u.archive === 0 ? <User key={u.id} user={u} /> : null)}
       </div>
     </>
   );
