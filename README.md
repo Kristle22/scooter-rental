@@ -7,11 +7,11 @@
 
 Scooter-rental server project
 
-Public domain site design: ![colts](./server/img/colts_public_page.png)
+Public domain site design: ![colts](./server/img/colts_public-page.png)
 
-Administrative domain site design: ![colts](./server/img/colts_adm-colors.png)
+Administrative domain site design: !
 ![colts](./server/img/colts_adm-create.png)
-![colts](./server/img/colts_adm-colors.png)
+![colts](./server/img/colts_adm-modal.png)
 ![colts](./server/img/colts_adm-colors.png)
 ![colts](./server/img/colts_adm-rezervations.png)
 ![colts](./server/img/colts_adm-coms.png)
