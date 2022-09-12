@@ -37,7 +37,7 @@ body {
   width: 100%;
   height: 83vh;
   background: linear-gradient(
-      rgba(21, 21, 20, 0.478),
+      rgba(22, 22, 7, 0.478),
       rgba(252, 244, 244, 0.433)
     ),
     url('./img/admin.jpg') center/cover no-repeat;
